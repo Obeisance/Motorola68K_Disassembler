@@ -915,9 +915,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; if ");
+		outputString.append("; if condition (");
 		outputString.append(condition);
-		outputString.append(" true, then PC + dn -> PC");
+		outputString.append(") true, then PC + dn -> PC");
 		//Bcc
 	} else if (commandArrayString == "BCHG_bit") {
 		//BCHG bit number dynamic in register
@@ -2261,10 +2261,10 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; if ");
+		outputString.append("; if condition (");
 		outputString.append(condition);
 		outputString.append(
-				" false, then (Dn - 1 -> Dn; if Dn != -1 then PC + dn -> PC)");
+				") false, then (Dn - 1 -> Dn; if Dn != -1 then PC + dn -> PC)");
 		//DBcc
 	} else if (commandArrayString == "DIVS_DIVSL") {
 		//DIVS,DIVSL word
@@ -3742,7 +3742,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 		outputString.push_back('\t');
 		outputString.append(
-				"; Registers -> destination; source -> registers; register list mask: A7,A6,A5,A4,A3,A2,A1,A0,D7,D6,D5,D4,D3,D2,D1,D0 is reversed for -(An)");
+				"; Registers -> destination (OR) source -> registers; register list mask: A7,A6,A5,A4,A3,A2,A1,A0,D7,D6,D5,D4,D3,D2,D1,D0 is reversed for -(An)");
 		//MOVEM
 	} else if (commandArrayString == "MOVEP") {
 		//MOVEP
@@ -5226,10 +5226,10 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; if ");
+		outputString.append("; if condition (");
 		outputString.append(condition);
 		outputString.append(
-				" true, then 1s -> destination; else 0s -> destination");
+				") true, then 1s -> destination; else 0s -> destination");
 		//Scc
 	} else if (commandArrayString == "SUB") {
 		//SUB
@@ -5242,8 +5242,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//register is any of the 8 Data registers,
 		//opmode
 		//byte  word  long         operation
-		//000   001   010     Dn  - <ea>-> <ea>
-		//100   101   110     <ea> - Dn -> Dn
+		//                  destin   src   destn
+		//000   001   010     Dn  - <ea>-> Dn
+		//100   101   110     <ea> - Dn -> <ea>
 		//effective address field: if <ea> is source
 		//addressing mode    mode    register
 		//    Dn             000      Dn
@@ -5309,12 +5310,12 @@ int constructInstructionString(string commandArrayString, string commandString,
 			baseInstructionByteNumber = 0;//set this to 0 if no valid entries are made
 		}
 
-		if (opmode == "000" || opmode == "001" || opmode == "010") {
+		if (opmode == "100" || opmode == "101" || opmode == "110") {
 			outputString.append(" D");
 			outputString.append(regist);
 			outputString.append(",");
 			outputString.append(effectiveAddress);
-		} else if (opmode == "100" || opmode == "101" || opmode == "110") {
+		} else if (opmode == "000" || opmode == "001" || opmode == "010") {
 			outputString.append(" ");
 			outputString.append(effectiveAddress);
 			outputString.append(",D");
@@ -5871,9 +5872,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; if ");
+		outputString.append("; if condition (");
 		outputString.append(condition);
-		outputString.append(" true, then TRAP");
+		outputString.append(") true, then TRAP");
 		//TRAPcc
 	} else if (commandArrayString == "TRAPV") {
 		//TRAPV
