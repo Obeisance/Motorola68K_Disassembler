@@ -401,3 +401,84 @@ bool stringSearch(string searchTerm, string searchString)
 	}
 	return isPresent;
 }
+
+string twosCompliment(string binaryString)
+{
+	//returns the twos compliment of a binary string
+	//extend the binary to be byte aligned, invert and add one to get twos compliment
+
+	//extend to nearest number of bits 8, 16 or 24 or 32
+	int sizeOfbinaryString = binaryString.length();
+	int lengthOfBits = 0;
+	if(sizeOfbinaryString <= 8)
+	{
+		lengthOfBits = 8;
+	}
+	else if(sizeOfbinaryString <= 16)
+	{
+		lengthOfBits = 16;
+	}
+	else if(sizeOfbinaryString <= 24)
+	{
+		lengthOfBits = 24;
+	}
+	else if(sizeOfbinaryString <= 32)
+	{
+		lengthOfBits = 32;
+	}
+
+	string extendedStringBinary = "";
+	for(int i = 0; i < lengthOfBits - sizeOfbinaryString; i++)
+	{
+		if(binaryString[0] == '0')
+		{
+			extendedStringBinary.push_back('0');
+		}
+		else if(binaryString[0] == '1')
+		{
+			extendedStringBinary.push_back('1');
+		}
+	}
+	extendedStringBinary.append(binaryString);
+
+	//now extendedStringBinary is a byte divisible binary number, after having been sign extended
+
+	int posOrNeg = 1;
+	if(extendedStringBinary[0] == '1')//if the first bit is 1, it is a negative number
+	{
+		posOrNeg = -1;
+	}
+	//invert bits if the number is negative
+	if(posOrNeg == -1)
+	{
+		int lengthOfStringBinary = extendedStringBinary.length();
+		for(int j = 0; j < lengthOfStringBinary; j++)
+		{
+			if(extendedStringBinary[j] == '0')
+			{
+				extendedStringBinary[j] = '1';
+			}
+			else
+			{
+				extendedStringBinary[j] = '0';
+			}
+		}
+	}
+
+	//cout << "Inverted bits: " << stringBinary << '\t';
+	//convert back to int
+	string displacementNumber = stringBitsToNumber(extendedStringBinary);//output string decimal
+	long displacementBytes = stringDec_to_int(displacementNumber);//output integer decimal
+
+	//cout << "number: " << displacementNumber << '\t';
+
+	if(posOrNeg == -1)
+	{
+		//add one to finish the twos compliment
+		displacementBytes += 1;
+		displacementBytes = displacementBytes*posOrNeg;
+	}
+	char stringByte [14];
+	string compliment = itoa(displacementBytes,stringByte,10);
+	return compliment;
+}
