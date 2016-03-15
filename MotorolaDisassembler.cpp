@@ -20,6 +20,11 @@ void convert_s_record(ifstream &srec);
 //takes in a motorola s record file, and writes a file "decimal version" formatted
 //the way I first wrote the interpreter
 
+void readSkipAddresses(ofstream &jumpFile);
+//reads in hex addresses from a text file which indicate locations where
+//the user suspects that instructions start
+//file called "HexAddressesOfInstructions.txt"
+
 //int jumpCommand(string command);
 long jumpCommand(string command, long address);
 //input a command, and output an integer which contains the number
@@ -60,6 +65,7 @@ int main() {
 
 	  ofstream writeAssembly("assemblyVersion.txt", ios::trunc);//store our disassembled code
 	  ofstream branchAddresses("branchOrJumpAddresses.txt", ios::trunc);//store the addresses that the disassembled code branches to
+	  readSkipAddresses(branchAddresses);
 	  ofstream possDataAddresses("DataAddresses.txt", ios::trunc);//store the addresses that the disassembled code accesses -> data
 	  bool notFinished = true;//a flag to indicate we're done
 	  bool multipleMatchedCommands = false;//a flag to indicate that a piece of binary data matches more than one assembly machine instruction
@@ -732,4 +738,36 @@ void numberIsSmallerInDataAddresses(long number) {
 	myfile.close();
 	remove("DataAddresses.txt");
 	rename("temp1.txt","DataAddresses.txt");
+}
+
+void readSkipAddresses(ofstream &jumpFile)
+{
+	//reads in hex addresses from a text file which indicate locations where
+	//the user suspects that instructions start
+	ifstream myfile("HexAddressesOfInstructions.txt");
+	string line = "";
+
+	if (myfile.is_open())
+		{
+		  while (getline(myfile,line))
+		  {
+			  int lineLength = line.length();
+			  if(line[1] == 'x' || line[1] == 'X')
+			  {
+				  string hex = line.substr(2,lineLength - 2);
+				  cout << hex << '\n';
+				  hex = hexString_to_decimal(hex);
+				  long hexAddress = stringDec_to_int(hex);
+				  jumpFile << hexAddress << '\n';
+			  }
+			  else
+			  {
+				  //cout << line << '\n';
+				  string hex = hexString_to_decimal(line);
+				  long hexAddress = stringDec_to_int(hex);
+				  jumpFile << hexAddress << '\n';
+			  }
+
+		  }
+		}
 }

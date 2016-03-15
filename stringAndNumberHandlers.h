@@ -20,7 +20,7 @@ string stringNumber_to_hex(string number);
 //input a base10 number in a string, output a string with the equivalent hex number
 
 string hexString_to_decimal(string hex);
-//input a string value hex value, convert to decimal string
+//input a string hex value, convert to decimal string
 
 long long stringDec_to_int(string number);
 //input an integer in a string, convert to a number
@@ -43,3 +43,6 @@ string binaryString_to_charString(string binary);
 
 bool stringSearch(string searchTerm, string searchString);
 //looks for searchTerm in searchString- returns true if found
+
+string twosCompliment(string binaryString);
+//returns the twos compliment of a binary string

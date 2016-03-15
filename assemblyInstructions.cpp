@@ -3069,6 +3069,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 				commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
 		regis = stringBitsToNumber(regis);
+		string allocateDisplacement = twosCompliment(displacement);
 		displacement = stringBitsToNumber(displacement);
 		displacement = stringNumber_to_hex(displacement);
 
@@ -3083,7 +3084,8 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn->SP");
+		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn = ");
+		outputString.append(allocateDisplacement);
 		//LINK word
 	} else if (commandArrayString == "LINK_long") {
 		//LINK long
@@ -3104,6 +3106,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 				commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
 		regis = stringBitsToNumber(regis);
+		string allocateDisplacement = twosCompliment(displacement);
 		displacement = stringBitsToNumber(displacement);
 		displacement = stringNumber_to_hex(displacement);
 
@@ -3118,7 +3121,8 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn->SP");
+		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn = ");
+		outputString.append(allocateDisplacement);
 		//LINK long
 	} else if (commandArrayString == "LSL_LSR_sizeSelect") {
 		//LSL,LSR logical register shift
@@ -6012,7 +6016,6 @@ int constructInstructionString(string commandArrayString, string commandString,
 
 		int baseInstructionByteNumber = 4;
 
-		outputString.append(" #");
 		outputString.append(data);
 		outputString.append(",SR");
 
