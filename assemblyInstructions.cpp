@@ -2890,9 +2890,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//  (xxx).W          111      000
 		//  (xxx).L          111      001
 		//  #<data>          ---      ---
-		//  (d16,PC)         ---      ---
-		//  (d8,PC,Xn)       ---      ---
-		// (bd,PC,Xn)		 ---      ---
+		//  (d16,PC)         111      010
+		//  (d8,PC,Xn)       111      011
+		// (bd,PC,Xn)		 111      011
 
 		//base of instruction
 		outputString.append("JMP ");
@@ -2914,9 +2914,8 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//account for special cases
 		if (EAmode == "000" || EAmode == "001" || EAmode == "011"
 				|| EAmode == "100" || (EAmode == "111" && EAregi == "100")
-				|| (EAmode == "111" && EAregi == "010")
-				|| (EAmode == "111" && EAregi == "011")) {
-			//cannot use Dn, An, (An)+, -(An), #<data>, (d16,PC), (d8,PC,Xn) as EA
+				) {
+			//cannot use Dn, An, (An)+, -(An), #<data>, as EA
 			baseInstructionByteNumber = 0;
 		}
 
@@ -2949,9 +2948,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//  (xxx).W          111      000
 		//  (xxx).L          111      001
 		//  #<data>          ---      ---
-		//  (d16,PC)         ---      ---
-		//  (d8,PC,Xn)       ---      ---
-		// (bd,PC,Xn)		 ---      ---
+		//  (d16,PC)         111      010
+		//  (d8,PC,Xn)       111      011
+		// (bd,PC,Xn)		 111      011
 
 		//base of instruction
 		outputString.append("JSR ");
@@ -2973,9 +2972,8 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//account for special cases
 		if (EAmode == "000" || EAmode == "001" || EAmode == "011"
 				|| EAmode == "100" || (EAmode == "111" && EAregi == "100")
-				|| (EAmode == "111" && EAregi == "010")
-				|| (EAmode == "111" && EAregi == "011")) {
-			//cannot use Dn, An, (An)+, -(An), #<data>, (d16,PC), (d8,PC,Xn) as EA
+				) {
+			//cannot use Dn, An, (An)+, -(An), #<data>, as EA
 			baseInstructionByteNumber = 0;
 		}
 
@@ -3009,9 +3007,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//  (xxx).W          111      000
 		//  (xxx).L          111      001
 		//  #<data>          ---      ---
-		//  (d16,PC)         ---      ---
-		//  (d8,PC,Xn)       ---      ---
-		// (bd,PC,Xn)		 ---      ---
+		//  (d16,PC)         111      010
+		//  (d8,PC,Xn)       111      011
+		// (bd,PC,Xn)		 111      011
 
 		//base of instruction
 		outputString.append("LEA ");
@@ -3037,9 +3035,8 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//account for special cases
 		if (EAmode == "000" || EAmode == "001" || EAmode == "011"
 				|| EAmode == "100" || (EAmode == "111" && EAregi == "100")
-				|| (EAmode == "111" && EAregi == "010")
-				|| (EAmode == "111" && EAregi == "011")) {
-			//cannot use Dn, An, (An)+, -(An), #<data>, (d16,PC), (d8,PC,Xn) as EA
+				) {
+			//cannot use Dn, An, (An)+, -(An), #<data>, as EA
 			baseInstructionByteNumber = 0;
 		}
 
