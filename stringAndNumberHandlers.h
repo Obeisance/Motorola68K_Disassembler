@@ -44,5 +44,5 @@ string binaryString_to_charString(string binary);
 bool stringSearch(string searchTerm, string searchString);
 //looks for searchTerm in searchString- returns true if found
 
-string twosCompliment(string binaryString);
+string twosComplement(string binaryString);
 //returns the twos compliment of a binary string

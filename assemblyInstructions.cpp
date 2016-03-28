@@ -904,6 +904,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		} else if (baseInstructionByteNumber > 0) {
 			outputString.append(".B");
 		}
+		string complement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement); //convert data to decimal
 		displacement = stringNumber_to_hex(displacement); //convert decimal to hex
 
@@ -917,7 +918,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		outputString.push_back('\t');
 		outputString.append("; if condition (");
 		outputString.append(condition);
-		outputString.append(") true, then PC + dn -> PC");
+		outputString.append(") true, then PC + 2 + dn -> PC, twos complement = ");
+		outputString.append(complement);
+		outputString.push_back(' ');
 		//Bcc
 	} else if (commandArrayString == "BCHG_bit") {
 		//BCHG bit number dynamic in register
@@ -1239,6 +1242,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		} else {
 			outputString.append(".B");
 		}
+		string complement = twosComplement(displacement); //get the twos compliment
 		displacement = stringBitsToNumber(displacement); //convert data to decimal
 		displacement = stringNumber_to_hex(displacement); //convert decimal to hex
 
@@ -1250,7 +1254,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; PC + 2 + dn(twos bit comp) -> PC");
+		outputString.append("; PC + 2 + dn(twos complement = ");
+		outputString.append(complement);
+		outputString.append(" ) -> PC");
 		//BRA
 	} else if (commandArrayString == "BSET_bit") {
 		//BSET bit number dynamic, specified in a register
@@ -1419,7 +1425,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		} else {
 			outputString.append(".B");
 		}
-
+		string complement = twosComplement(displacement); //twos complement
 		displacement = stringBitsToNumber(displacement); //convert data to decimal
 		displacement = stringNumber_to_hex(displacement); //convert decimal to hex
 
@@ -1432,7 +1438,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 
 		outputString.push_back('\t');
 		outputString.append(
-				"; SP -4-> SP; PC->(SP); PC + 2 + dn(twos bit comp) -> PC");
+				"; SP -4-> SP; PC->(SP); PC + 2 + dn(twos complement = ");
+		outputString.append(complement);
+		outputString.append(" ) -> PC");
 		//BSR
 	} else if (commandArrayString == "BTST_bit") {
 		//BTST bit number dynamic, specified in register		//TEST(<bit number> of destination) -> Z;
@@ -2247,6 +2255,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 
 		//determine size
 		outputString.append(".W");
+		string complement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement); //convert data to decimal
 		displacement = stringNumber_to_hex(displacement); //convert decimal to hex
 
@@ -2264,7 +2273,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		outputString.append("; if condition (");
 		outputString.append(condition);
 		outputString.append(
-				") false, then (Dn - 1 -> Dn; if Dn != -1 then PC + dn -> PC)");
+				") false, then (Dn - 1 -> Dn; if Dn != -1 then PC + dn + 2 -> PC) twos complement = ");
+		outputString.append(complement);
+		outputString.push_back(' ');
 		//DBcc
 	} else if (commandArrayString == "DIVS_DIVSL") {
 		//DIVS,DIVSL word
@@ -3066,7 +3077,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 				commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
 		regis = stringBitsToNumber(regis);
-		string allocateDisplacement = twosCompliment(displacement);
+		string allocateDisplacement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement);
 		displacement = stringNumber_to_hex(displacement);
 
@@ -3081,8 +3092,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn = ");
+		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn => twos complement = ");
 		outputString.append(allocateDisplacement);
+		outputString.push_back(' ');
 		//LINK word
 	} else if (commandArrayString == "LINK_long") {
 		//LINK long
@@ -3103,7 +3115,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 				commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
 		regis = stringBitsToNumber(regis);
-		string allocateDisplacement = twosCompliment(displacement);
+		string allocateDisplacement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement);
 		displacement = stringNumber_to_hex(displacement);
 
@@ -3118,8 +3130,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 		}
 
 		outputString.push_back('\t');
-		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn = ");
+		outputString.append("; SP - 4 -> SP; An ->(SP); SP-> An; SP+dn -> SP, dn => twos complement = ");
 		outputString.append(allocateDisplacement);
+		outputString.push_back(' ');
 		//LINK long
 	} else if (commandArrayString == "LSL_LSR_sizeSelect") {
 		//LSL,LSR logical register shift
@@ -3773,6 +3786,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 				commandString);
 		dataRegi = stringBitsToNumber(dataRegi);
 		addrRegi = stringBitsToNumber(addrRegi);
+		string complement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement);
 		displacement = stringNumber_to_hex(displacement);
 
@@ -3816,7 +3830,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 			correctForm = baseInstructionByteNumber;
 		}
 		outputString.push_back('\t');
-		outputString.append("; Source -> destination");
+		outputString.append("; Source -> destination, twos complement = ");
+		outputString.append(complement);
+		outputString.push_back(' ');
 		//MOVEP
 	} else if (commandArrayString == "MOVEQ") {
 		//MOVEQ
@@ -5013,6 +5029,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//mode and addresses
 		string displacement = retrieveBitsFromInstruction(-1, 16,
 				commandString);
+		string complement = twosComplement(displacement);
 		displacement = stringBitsToNumber(displacement);
 
 		int baseInstructionByteNumber = 4;
@@ -5025,7 +5042,9 @@ int constructInstructionString(string commandArrayString, string commandString,
 
 		outputString.push_back('\t');
 		outputString.append(
-				"; return and deallocate (SP) -> PC; SP + 4 + dn -> SP");
+				"; return and deallocate (SP) -> PC; SP + 4 + dn -> SP, twos complement = ");
+		outputString.append(complement);
+		outputString.push_back(' ');
 		//RTD
 	} else if (commandArrayString == "RTR") {
 		//RTR

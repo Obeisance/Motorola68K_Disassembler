@@ -402,7 +402,7 @@ bool stringSearch(string searchTerm, string searchString)
 	return isPresent;
 }
 
-string twosCompliment(string binaryString)
+string twosComplement(string binaryString)
 {
 	//returns the twos compliment of a binary string
 	//extend the binary to be byte aligned, invert and add one to get twos compliment

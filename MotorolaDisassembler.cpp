@@ -501,6 +501,8 @@ long jumpCommand(string command, long address)
 		//Bcc and DBcc also use this displacement mechanism
 		//extract the byte displacement from the command
 
+		/* this old routine failed to distinguish a 16 bit displacement from an 8 bit displacement
+		 * thereby falsely indicating some 16 bit displacements as negative 8 bit displacements
 		//collect displacement, a hex value string
 		int startPlace = 0;
 		int endPlace = 0;
@@ -595,7 +597,41 @@ long jumpCommand(string command, long address)
 		}
 
 		//cout << "(number+1)*-1: " << displacementBytes << '\t';
-
+		*/
+		//find the point in the command string where "twos complement = " is written
+		string complementString = "";
+		int posOrNeg = 1;
+		bool found = false;
+		for(int a = 0; a < commandSize-18; a++)
+		{
+			if(command[a] == 't' && command[a+5] == 'c' && command[a+16] == '=')
+			{
+				int startPlace = 18;
+				if(command[a+18] == '-')
+				{
+					posOrNeg = -1;
+					startPlace+=1;
+				}
+				for(int b = a+startPlace; b < commandSize;b++)
+				{
+					if(command[b] != ' ')
+					{
+						complementString.push_back(command[b]);
+					}
+					else
+					{
+						found = true;
+						break;
+					}
+				}
+				if(found == true)
+				{
+					break;
+				}
+			}
+		}
+		displacementBytes = stringDec_to_int(complementString);//output integer decimal
+		displacementBytes = displacementBytes*posOrNeg;
 		//then add 2 to get the byte displacement to the next command
 		displacementBytes += 2;
 	}
