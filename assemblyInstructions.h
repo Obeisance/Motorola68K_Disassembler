@@ -49,13 +49,27 @@ long decimalVersionFirstAddress();
 long decimalVersionLastAddress();
 //outputs the last address in the decimalVersion file
 
+string addToJumpAddresses(string jumpAddresses, long addressToAdd);
+//checks to see if addressToAdd is already present in the
+//jumpAddresses string, if it is not, add it into the string
+//in numerical order
+
+string removeLowerJumpAddresses(string jumpAddresses, long addressThreshold);
+//removes from jumpAddresses the addresses below addressThreshold
+
+string removeHigherJumpAddresses(string jumpAddresses, long addressThreshold);
+//removes from jumpAddresses the addresses above addressThreshold
+
+bool numberIsPresentInJumpAddresses(string jumpAddresses, long address);
+//returns true if address is present in jumpAddresses
+
 bool numberIsPresentInJumpAddresses(long number);
 //searches the jump or branch to file for the input number, returns true if present
 
 void numberIsSmallerInJumpAddresses(long number);
 //searches the jump or branch file and erases any numbers which are smaller than the input number
 
-bool  writeVBR_table(string assemblyLine, long currentAddress);
+bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddresses);
 //input a string which contains the MOVEC to VBR command
 //the function will do one of two things: if the  VBR table
 //is at a lower memory address: re-write the assemblyVersion file up

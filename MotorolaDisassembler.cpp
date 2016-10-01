@@ -20,7 +20,13 @@ void convert_s_record(ifstream &srec);
 //takes in a motorola s record file, and writes a file "decimal version" formatted
 //the way I first wrote the interpreter
 
-void readSkipAddresses(ofstream &jumpFile);
+//void readSkipAddresses(ofstream &jumpFile);
+//reads in hex addresses from a text file which indicate locations where
+//the user suspects that instructions start
+//file called "HexAddressesOfInstructions.txt"
+
+string readSkipAddresses(string jumpAddresses, string filename);
+//string readSkipAddresses(string jumpAddresses);
 //reads in hex addresses from a text file which indicate locations where
 //the user suspects that instructions start
 //file called "HexAddressesOfInstructions.txt"
@@ -37,11 +43,6 @@ long long convertAddress(string assembly);
 //input some assembly code, extract an address which is not part of a branch or LEA routine
 //outputs the address as a decimal
 
-bool numberIsPresentInDataAddresses(long number);
-//searches the possible data addresses to file for the input number, returns true if present
-
-void numberIsSmallerInDataAddresses(long number);
-//searches the data address file and erases any numbers which are smaller than the input number
 
 int main() {
 
@@ -54,7 +55,34 @@ int main() {
 	  //ifstream s_record("tutorial1.S68");
 	  //ifstream s_record("tutorial2.S68");
 	  //ifstream s_record("tutorial4.S68");
-	  ifstream s_record("6-16-06 ECU Read");
+	  //ifstream s_record("6-16-06 ECU Read");
+	  //ifstream s_record("VIN 31475 srec.txt");
+	  string inputString = "";
+	  cout << "-----------------------------------------------" << '\n';
+	  cout << "-Welcome to the Daft Motorola 68k Disassembler-" << '\n';
+	  cout << "-----------------------------------------------" << '\n' << '\n';
+	  cout << "  This program reads in an s-record file and   " << '\n';
+	  cout << "    linearly steps from address to address     " << '\n';
+	  cout << "  attempting to interpret the binary data as   " << '\n';
+	  cout << "assembly instructions. The program accounts for" << '\n';
+	  cout << "certain types of jump landing points, but does " << '\n';
+	  cout << "not distinguish instructions from data. If you " << '\n';
+	  cout << "  know that certain memory addresses contain   " << '\n';
+	  cout << "instructions, write these hex addresses into a " << '\n';
+	  cout << "   text file with one address per line. This   " << '\n';
+	  cout << "  program interprets binary code for the CPU32 " << '\n';
+	  cout << "and MC68000 instruction set and outputs a file " << '\n';
+	  cout << "         called 'assemblyVersion.txt'          " << '\n' << '\n';
+	  cout << "Input name of s record file to be disassembled:" << '\n';
+	  cout << ">>:";
+	  getline(cin,inputString);
+	  cout << "Input name of file which contains hex addresses" << '\n';
+	  cout << "    which are known to contain instructions:   " << '\n';
+	  cout << ">>:";
+	  string addressFileName = "";
+	  getline(cin,addressFileName);
+	  cout << '\n' << "Setting up...";
+	  ifstream s_record(inputString.c_str());
 	  convert_s_record(s_record);
 	  s_record.close();
 
@@ -62,11 +90,17 @@ int main() {
 	  string binaryInstruction = "";//used to store bits of data
 	  long lastAddressInBinaryInstruction = -1;//track the bits we are looking at
 	  long firstAddressInBinaryInstruction = 0;
+	  string jumpLandingPoints = "";
 
 	  ofstream writeAssembly("assemblyVersion.txt", ios::trunc);//store our disassembled code
-	  ofstream branchAddresses("branchOrJumpAddresses.txt", ios::trunc);//store the addresses that the disassembled code branches to
-	  readSkipAddresses(branchAddresses);
-	  ofstream possDataAddresses("DataAddresses.txt", ios::trunc);//store the addresses that the disassembled code accesses -> data
+	  //ofstream branchAddresses("branchOrJumpAddresses.txt", ios::trunc);//store the addresses that the disassembled code branches to
+	  //readSkipAddresses(branchAddresses);
+	  if(addressFileName.length() > 0)
+	  {
+		  jumpLandingPoints = readSkipAddresses(jumpLandingPoints, addressFileName);
+		  //jumpLandingPoints = readSkipAddresses(jumpLandingPoints);
+	  }
+
 	  bool notFinished = true;//a flag to indicate we're done
 	  bool multipleMatchedCommands = false;//a flag to indicate that a piece of binary data matches more than one assembly machine instruction
 	  int bytesToShift = 2;//track the number of bytes to the next instruction
@@ -97,10 +131,14 @@ int main() {
 		  addressOfInterest = startAddress;//otherwise, start looking for instructions at the first address in the file
 	  }
 
-
+	  cout << "Disassembling... please wait" << '\n';
 	  //loop until we decide that all instructions have been interpreted
 	  while(notFinished == true)
 	  {
+		  //long fractionComplete = (addressOfInterest - startAddress)/(endAddress - startAddress);
+		  //cout << '\r' << "Disassembling: " << fractionComplete << '%';
+
+		  //cout << "updating binary instruction" << '\n';
 		  //assemble the set of binary values which are to be interpreted as an instruction
 		  //we want 128 bits (16 bytes, for now)
 		  //binaryInstruction = ""; //->only use when not using "if(addressOfInterest + i > lastAddressInBinaryInstruction)" to fully build command string each time
@@ -126,8 +164,6 @@ int main() {
 				  }
 			  }
 		  }
-		  //instructionAddresses << "firstAddr: " << firstAddressInBinaryInstruction << ", lastAddr: " << lastAddressInBinaryInstruction << '\n';
-		  //instructionAddresses << "Addr: " << addressOfInterest << ", bits: " << binaryInstruction << '\n';
 		  firstAddressInBinaryInstruction = addressOfInterest;
 		  lastAddressInBinaryInstruction = addressOfInterest + addressesInBinaryInstruction - 1;
 
@@ -144,89 +180,96 @@ int main() {
 		  //to all of the possible instruction files
 		  if(binaryInstruction.length() == 128)
 		  {
+			  //cout << "removing lower jump addresses" << '\n';
+			  //remove jump landing points which are at lower addresses
+			  jumpLandingPoints = removeLowerJumpAddresses(jumpLandingPoints, addressOfInterest);//remove any numbers from the file which are smaller than our current position in order to keep the file short
+
+			  //cout << "guessing assembly command" << '\n';
 			  //check the instruction to see if it matches the basic format of a command
 			  string assemblySyntax = "";
 			  bytesToShift = guessCommand(binaryInstruction,assemblySyntax,multipleMatchedCommands);
 
+			  //cout << "check for jump commands" << '\n';
 			  //if the match was a jump command figure out where the jump directs to
 			  long displacementBytes = jumpCommand(assemblySyntax, addressOfInterest);
+			  //cout << "done checking for jump commands" << '\n';
 			  //cout<<bytesToShift << ' ' << assemblySyntax << '\n';
 			  //write the instruction to the assembly code file, write jump address targets to branchAddress file
 			  if(bytesToShift != 0)
 			  {
+				  //cout << "check to see if instruction bisects protected address" << '\n';
 				  //first, lets make sure that we are not writing an instruction which
-				  //overlaps with a jump or possible data
+				  //overlaps with a jump
 				  bool safeJump = true;
-				  //possDataAddresses.close();
-				  branchAddresses.close();//cannot access the file if it is still in the write buffer
+				  //branchAddresses.close();//cannot access the file if it is still in the write buffer
 				  //loop through the addresses which make up the present instruction
-				  //compare them to data, jump or branch locations and flag if data or a jump or branch
+				  //compare them to jump or branch locations and flag if a jump or branch
 				  //indicates a landing point within the instruction
-				  /*if(numberIsPresentInDataAddresses(addressOfInterest)) {
-					  safeJump = false;
-					  writeAssembly << "possible data address " << assemblySyntax << ' ';
-				  }*/
 				  for(int z = 1; z < bytesToShift; z++) {
-					  if(numberIsPresentInJumpAddresses(addressOfInterest+z)) {
+					  //cout << addressOfInterest+z << ' ';
+					  if(numberIsPresentInJumpAddresses(jumpLandingPoints, addressOfInterest+z)/*numberIsPresentInJumpAddresses(addressOfInterest+z)*/) {
 						  safeJump = false;
 						  //cout << "Reject addr: " << addressOfInterest << ", assembly: " << assemblySyntax << '\n';
 						  string hexAddressOfReject = decAddr_to_hexAddr(addressOfInterest);
 						  writeAssembly << hexAddressOfReject << ':' << '\t' << "reject due to branch conflict: " << assemblySyntax << ' ';
 						  break;
 					  }
-					  /*else if(numberIsPresentInDataAddresses(addressOfInterest+z)) {
-						  safeJump = false;
-						  //writeAssembly << "possible data address ";
-						  break;
-					  }*/
 				  }
+				  //cout << addressOfInterest << '\n';
+				  //cout << '\n';
 				  //extract an effective address from data
-				  //long potentialDataAddress = convertAddress(assemblySyntax);
-				  //numberIsSmallerInDataAddresses(addressOfInterest);//remove any numbers from the file which are smaller than our current position in order to keep the file short
-				  //bool dataAddressPresent = numberIsPresentInDataAddresses(potentialDataAddress);//don't add same address twice
-				  branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
-				  //ofstream possDataAddresses("DataAddresses.txt", ios::app);
+				  //branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
 
-
-				  //if(potentialDataAddress > addressOfInterest && !dataAddressPresent && potentialDataAddress < endAddress) {
-				//	  possDataAddresses << potentialDataAddress << '\n';
-				  //}
 
 				  //if the locations are all clear, then proceed to write to the assembly file
 				  if(safeJump == true) {
 
+					  //cout << "check for vector table setpoint" << '\n';
 					  //check for the possibility that the new line is one where a VBR is set
 					  if(stringSearch("VBR", assemblySyntax))
 					  {
+						  //cout << "writing vector table" << '\n';
 						  //cout << '\n' << "found VBR at: " << addressOfInterest << '\n';
 						  writeAssembly.close();//close the file to store our disassembled code so it saves current progress
-						  branchAddresses.close();
-						  if(writeVBR_table(assemblySyntax, addressOfInterest))
+						  //branchAddresses.close();
+						  if(writeVBR_table(assemblySyntax, addressOfInterest, jumpLandingPoints))
 						  {
 
 						  }
+						  jumpLandingPoints = removeHigherJumpAddresses(jumpLandingPoints,endAddress);
 						  writeAssembly.open("assemblyVersion.txt", ios::app);//reopen the file to store our disassembled code
-						  branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
+						  //branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
 					  }
 
+					  //cout << "writing to assembly file" << '\n';
 					  //then proceed to write to the assembly file
 					  string hexAddress = decAddr_to_hexAddr(addressOfInterest);
 					  writeAssembly << hexAddress << ':' << '\t';
 					  writeAssembly << assemblySyntax;
 					  if(displacementBytes != 0)
 					  {
+						  //cout << "updating protected address list" << '\n';
 						  long jump = addressOfInterest + displacementBytes;
-						  string jumpAddr = decAddr_to_hexAddr(jump);
-						  writeAssembly << " displacement: " << displacementBytes << " points to: " << jumpAddr;
+						  if(jump >= startAddress)
+						  {
+							  string jumpAddr = decAddr_to_hexAddr(jump);
+							  writeAssembly << " displacement: " << displacementBytes << " points to: " << jumpAddr;
+						  }
+						  else
+						  {
+							  writeAssembly << " displacement: invalid";
+						  }
 						  //branchAddresses << "Addr: " << addressOfInterest << " jump to: " << jumpAddr << " or: " << jump << '\n';
-						  branchAddresses.close();
-						  bool alreadyPresent = numberIsPresentInJumpAddresses(jump);//is this address already present in the file?
-						  numberIsSmallerInJumpAddresses(addressOfInterest);//remove any numbers from the file which are smaller than our current position in order to keep the file short
-						  branchAddresses.open("branchOrJumpAddresses.txt", ios::app);
-						  if(displacementBytes > 0 && !alreadyPresent) {
-							  branchAddresses << jump << '\n';
+						  //branchAddresses.close();
+						  //bool alreadyPresent = numberIsPresentInJumpAddresses(jump);//is this address already present in the file?
+						  //numberIsSmallerInJumpAddresses(addressOfInterest);//remove any numbers from the file which are smaller than our current position in order to keep the file short
+						  //branchAddresses.open("branchOrJumpAddresses.txt", ios::app);
+						  if(displacementBytes > 0 && jump <= endAddress/*&& !alreadyPresent*/) {
+							  //branchAddresses << jump << '\n';
+							  jumpLandingPoints = addToJumpAddresses(jumpLandingPoints, jump);
 						  }
 					  }
+					  //cout << "addr: " << addressOfInterest << " jump: " << jumpLandingPoints << '\n';
 					  matchfound = true;
 				  }
 			  }
@@ -234,6 +277,7 @@ int main() {
 			  //if a match was found, move the address of interest by the number of bytes in the instruction
 			  if(matchfound == true)
 			  {
+				  //cout << "write assembly file data after instruction" << '\n';
 				  matchfound = false;
 				  string instructionBits = binaryInstruction.substr(0, 8*bytesToShift);
 				  string instructionBitsHex = binaryString_to_hexString(instructionBits);
@@ -246,6 +290,7 @@ int main() {
 				  //matched instruction
 				  int sizeOfBinaryInstructionMatch = binaryInstruction.length();
 
+				  //cout << "update accounting of binary instruction" << '\n';
 				  //since we have a match, if we are shifting by fewer bytes than are stored in our comparison array of bits, shift that array
 				  if(bytesToShift*8 <= sizeOfBinaryInstructionMatch)
 				  {
@@ -258,10 +303,11 @@ int main() {
 					  binaryInstruction = "";
 				  }
 
-				  //writeAssembly << binaryInstruction << '\n';
+
 			  }
 			  else
 			  {
+				  //cout << "no match, update assembly file" << '\n';
 				  //if we do not have an instruction match, write this to the assembly file
 				  //begin by finding the address where we failed to match
 				  char stringByte [14];
@@ -297,8 +343,6 @@ int main() {
 			  //cout << "not enough bits" << '\n';
 			  //if we don't have 32 bits for comparison, get the next
 			  //line of data and be sure to get 16 bits
-			  //writeAssembly << '\n';
-			  //getNextLine = true;
 
 			  //if we decided to step backwards in memory, reset the file read in variables
 			  if(addressOfInterest < firstAddressInBinaryInstruction)
@@ -322,11 +366,11 @@ int main() {
 
 	  }
 
+	  cout << "Finished disassembling!" << '\n';
 	  writeAssembly.close();
-	  branchAddresses.close();
-	  possDataAddresses.close();
-	  remove("branchOrJumpAddresses.txt");
-	  remove("DataAddresses.txt");
+	  remove("decimalVersion.txt");
+	  //branchAddresses.close();
+	  //remove("branchOrJumpAddresses.txt");
 	return 0;
 }
 
@@ -662,18 +706,23 @@ string extractAddress(string original)
 	int originalStringLength = original.length();
 	int addrStartPosition = -1;
 	//loop through the string, search for "($" and ended by ')'
-	for(int i = 0; i < originalStringLength; i++)
+	for(int i = 0; i < originalStringLength - 1; i++)
 	{
 		if(original[i] == '(' && original[i + 1] == '$')
 		{
 			addrStartPosition = i + 1;
 		}
 
-		if(addrStartPosition >= 0 && original[i] != ')' && original[i] != '(')
+		if(addrStartPosition >= 0 && original[i] != ')' && original[i] != '(' && original[i] != ',')
 		{
 			address.push_back(original[i]);
 		}
-		else if(original[i] == ')')
+		else if (addrStartPosition >= 0 && original[i] == ',')
+		{
+			address = "";
+			addrStartPosition = -1;
+		}
+		else if(addrStartPosition >= 0 && original[i] == ')')
 		{
 			break;//end the for loop, we've collected the address
 		}
@@ -688,32 +737,6 @@ string extractAddress(string original)
 	 */
 }
 
-bool numberIsPresentInDataAddresses(long number) {
-	//searches the possible data addresses to file for the input number, returns true if present
-	bool isPresent = false;
-	string line = "";
-
-	ifstream myfile("DataAddresses.txt");
-
-	if (myfile.is_open())
-	{
-		//as long as we have lines to read in, continue
-	    while (getline(myfile,line)) {
-	    	long address = stringDec_to_int(line);
-	    	//cout <<"line: " << line << " address: " << address << " comp: " << number << '\n';
-	    	if(address == number) {
-	    		isPresent = true;
-	    	}
-
-	    	if(isPresent == true) {
-	    		break;
-	    	}
-	    }
-
-	}
-	myfile.close();
-	return isPresent;
-}
 
 long long convertAddress(string assembly) {
 	//input some assembly code, extract an address which is not part of a branch or LEA routine
@@ -753,30 +776,8 @@ long long convertAddress(string assembly) {
 	return dataAddressDecimal;
 }
 
-void numberIsSmallerInDataAddresses(long number) {
-	//searches the data address file and erases any numbers which are smaller than the input number
-	string line = "";
 
-	ifstream myfile("DataAddresses.txt");
-	ofstream temp("temp1.txt", ios::trunc);
-
-	if (myfile.is_open())
-	{
-		//as long as we have lines to read in, continue
-	    while (getline(myfile,line)) {
-	    	long address = stringDec_to_int(line);
-	    	if(address > number) {
-	    		temp << line << '\n';
-	    	}
-	    }
-	}
-	temp.close();
-	myfile.close();
-	remove("DataAddresses.txt");
-	rename("temp1.txt","DataAddresses.txt");
-}
-
-void readSkipAddresses(ofstream &jumpFile)
+/*void readSkipAddresses(ofstream &jumpFile)
 {
 	//reads in hex addresses from a text file which indicate locations where
 	//the user suspects that instructions start
@@ -806,4 +807,46 @@ void readSkipAddresses(ofstream &jumpFile)
 
 		  }
 		}
+}*/
+
+string readSkipAddresses(string jumpAddresses, string filename)
+//string readSkipAddresses(string jumpAddresses)
+{
+	//reads in hex addresses from a text file which indicate locations where
+	//the user suspects that instructions start
+	//file called "HexAddressesOfInstructions.txt"
+
+	//reads in hex addresses from a text file which indicate locations where
+	//the user suspects that instructions start
+	//ifstream myfile("HexAddressesOfInstructions.txt");
+	ifstream myfile(filename.c_str());
+	string line = "";
+	string newAppendedString = "";
+
+	if (myfile.is_open())
+	{
+	  while (getline(myfile,line))
+	  {
+		  int lineLength = line.length();
+		  if(line[1] == 'x' || line[1] == 'X')
+		  {
+			  string hex = line.substr(2,lineLength - 2);
+			  cout << hex << '\n';
+			  hex = hexString_to_decimal(hex);
+			  long hexAddress = stringDec_to_int(hex);
+			  newAppendedString = addToJumpAddresses(newAppendedString,hexAddress);
+			  //jumpFile << hexAddress << '\n';
+		  }
+		  else
+		  {
+			  //cout << line << '\n';
+			  string hex = hexString_to_decimal(line);
+			  long hexAddress = stringDec_to_int(hex);
+			  newAppendedString = addToJumpAddresses(newAppendedString,hexAddress);
+			  //jumpFile << hexAddress << '\n';
+		  }
+
+	  }
+	}
+	return newAppendedString;
 }

@@ -1,0 +1,705 @@
+$fffa00_SIM module configuration register (SIMCR)
+$fffa02_SIM test register (SIMTR)
+$fffa04_Clock synthesizer control register (SYNCR)
+$fffa07_Reset status register (RSR)
+$fffa08_SIM test register E (SIMTRE)
+$fffa11_Port E data (PORTE0)
+$fffa13_Port E data (PORTE1)
+$fffa15_Port E data direction (DDRE)
+$fffa17_Port E pin assignment (PEPAR)
+$fffa19_Port F data (PORTF0)
+$fffa1b_Port F data (PORTF1)
+$fffa1d_Port F data direction (DDRF)
+$fffa1f_Port F pin assignment (PFPAR)
+$fffa21_System protection control (SYPCR)
+$fffa22_Periodic interrupt control register (PICR)
+$fffa24_Periodic interrupt timing register (PITR)
+$fffa27_Software service (SWSR)
+$fffa30_Test module master shift A (TSTMSRA)
+$fffa32_Test module master shift B (TSTMSRB)
+$fffa34_Test module shift count (TSTSC)
+$fffa36_Test module repetition counter (TSTRC)
+$fffa38_Test module control (CREG)
+$fffa3a_Test module distributed (DREG)
+$fffa41_Port C data (PORTC)
+$fffa44_Chip select pin assignment (CSPAR0)
+$fffa46_Chip select pin assignment (CSPAR1)
+$fffa48_Chip select base boot (CSBARBT)
+$fffa4a_Chip select option boot (CSORBT)
+$fffa4c_Chip select base 0 (CSBAR0)
+$fffa4e_Chip select option 0 (CSOR0)
+$fffa50_Chip select base 1 (CSBAR1)
+$fffa52_Chip select option 1 (CSOR1)
+$fffa54_Chip select base 2 (CSBAR2)
+$fffa56_Chip select option 2 (CSOR2)
+$fffa58_Chip select base 3 (CSBAR3)
+$fffa5a_Chip select option 3 (CSOR3)
+$fffa5c_Chip select base 4 (CSBAR4)
+$fffa5e_Chip select option 4 (CSOR4)
+$fffa60_Chip select base 5 (CSBAR5)
+$fffa62_Chip select option 5 (CSOR5)
+$fffa64_Chip select base 6 (CSBAR6)
+$fffa66_Chip select option 6 (CSOR6)
+$fffa68_Chip select base 7 (CSBAR7)
+$fffa6a_Chip select option 7 (CSOR7)
+$fffa6c_Chip select base 8 (CSBAR8)
+$fffa6e_Chip select option 8 (CSOR8)
+$fffa70_Chip select base 9 (CSBAR9)
+$fffa72_Chip select option 9 (CSOR9)
+$fffa74_Chip select base 10 (CSBAR10)
+$fffa76_Chip select option 10 (CSOR10)
+$fffb40_RAM module configuration register (RAMMCR)
+$fffb42_RAM test register (RAMTST)
+%fffb44_RAM array base address register high (RAMBAH)
+$fffb46_RAM array base address register low (RAMBAL)
+$fff820_Masked ROM module configuration register (MRMCR)
+$fff824_ROM array base address high register (ROMBAH)
+$fff826_ROM array base address low register (ROMBAL)
+$fff828_Signature high register (SIGHI)
+$fff82a_Signature low register (SIGLO)
+$fff830_ROM bootstrap word 0 (ROMBS0)
+$fff832_ROM bootstrap word 1 (ROMBS1)
+$fff834_ROM bootstrap word 2 (ROMBS2)
+$fff836_ROM bootstrap word 3 (ROMBS3)
+$fff200_Module configuration register (QADCMCR)
+$fff202_Test register (QADCTEST)
+$fff204_Interrupt register (QADCINT)
+$fff206_Port A data (PORTQA)
+$fff207_Port B data (PORTQB)
+$fff208_Port data direction register (DDRQA)
+$fff20a_Control register 0 (QACR0)
+$fff20c_Control register 1 (QACR1)
+$fff20e_Control register 2 (QACR2)
+$fff210_Status register (QASR)
+$fff230_Conversion command word (CCW) table
+$fff232_Conversion command word (CCW) table
+$fff234_Conversion command word (CCW) table
+$fff236_Conversion command word (CCW) table
+$fff238_Conversion command word (CCW) table
+$fff23a_Conversion command word (CCW) table
+$fff23c_Conversion command word (CCW) table
+$fff23e_Conversion command word (CCW) table
+$fff240_Conversion command word (CCW) table
+$fff242_Conversion command word (CCW) table
+$fff244_Conversion command word (CCW) table
+$fff246_Conversion command word (CCW) table
+$fff248_Conversion command word (CCW) table
+$fff24a_Conversion command word (CCW) table
+$fff24c_Conversion command word (CCW) table
+$fff24e_Conversion command word (CCW) table
+$fff250_Conversion command word (CCW) table
+$fff252_Conversion command word (CCW) table
+$fff254_Conversion command word (CCW) table
+$fff256_Conversion command word (CCW) table
+$fff258_Conversion command word (CCW) table
+$fff25a_Conversion command word (CCW) table
+$fff25c_Conversion command word (CCW) table
+$fff25e_Conversion command word (CCW) table
+$fff260_Conversion command word (CCW) table
+$fff262_Conversion command word (CCW) table
+$fff264_Conversion command word (CCW) table
+$fff266_Conversion command word (CCW) table
+$fff268_Conversion command word (CCW) table
+$fff26a_Conversion command word (CCW) table
+$fff26c_Conversion command word (CCW) table
+$fff26e_Conversion command word (CCW) table
+$fff270_Conversion command word (CCW) table
+$fff272_Conversion command word (CCW) table
+$fff274_Conversion command word (CCW) table
+$fff276_Conversion command word (CCW) table
+$fff278_Conversion command word (CCW) table
+$fff27a_Conversion command word (CCW) table
+$fff27c_Conversion command word (CCW) table
+$fff27e_Conversion command word (CCW) table
+$fff2b0_Result word table (RJURR)
+$fff2b2_Result word table (RJURR)
+$fff2b4_Result word table (RJURR)
+$fff2b6_Result word table (RJURR)
+$fff2b8_Result word table (RJURR)
+$fff2ba_Result word table (RJURR)
+$fff2bc_Result word table (RJURR)
+$fff2be_Result word table (RJURR)
+$fff2c0_Result word table (RJURR)
+$fff2c2_Result word table (RJURR)
+$fff2c4_Result word table (RJURR)
+$fff2c6_Result word table (RJURR)
+$fff2c8_Result word table (RJURR)
+$fff2ca_Result word table (RJURR)
+$fff2cc_Result word table (RJURR)
+$fff2ce_Result word table (RJURR)
+$fff2d0_Result word table (RJURR)
+$fff2d2_Result word table (RJURR)
+$fff2d4_Result word table (RJURR)
+$fff2d6_Result word table (RJURR)
+$fff2d8_Result word table (RJURR)
+$fff2da_Result word table (RJURR)
+$fff2dc_Result word table (RJURR)
+$fff2de_Result word table (RJURR)
+$fff2e0_Result word table (RJURR)
+$fff2e2_Result word table (RJURR)
+$fff2e4_Result word table (RJURR)
+$fff2e6_Result word table (RJURR)
+$fff2e8_Result word table (RJURR)
+$fff2ea_Result word table (RJURR)
+$fff2ec_Result word table (RJURR)
+$fff2ee_Result word table (RJURR)
+$fff2f0_Result word table (RJURR)
+$fff2f2_Result word table (RJURR)
+$fff2f4_Result word table (RJURR)
+$fff2f6_Result word table (RJURR)
+$fff2f8_Result word table (RJURR)
+$fff2fa_Result word table (RJURR)
+$fff2fc_Result word table (RJURR)
+$fff2fe_Result word table (RJURR)
+$fff330_Result word table (LJSRR)
+$fff332_Result word table (LJSRR)
+$fff334_Result word table (LJSRR)
+$fff336_Result word table (LJSRR)
+$fff338_Result word table (LJSRR)
+$fff33a_Result word table (LJSRR)
+$fff33c_Result word table (LJSRR)
+$fff33e_Result word table (LJSRR)
+$fff340_Result word table (LJSRR)
+$fff342_Result word table (LJSRR)
+$fff344_Result word table (LJSRR)
+$fff346_Result word table (LJSRR)
+$fff348_Result word table (LJSRR)
+$fff34a_Result word table (LJSRR)
+$fff34c_Result word table (LJSRR)
+$fff34e_Result word table (LJSRR)
+$fff350_Result word table (LJSRR)
+$fff352_Result word table (LJSRR)
+$fff354_Result word table (LJSRR)
+$fff356_Result word table (LJSRR)
+$fff358_Result word table (LJSRR)
+$fff35a_Result word table (LJSRR)
+$fff35c_Result word table (LJSRR)
+$fff35e_Result word table (LJSRR)
+$fff360_Result word table (LJSRR)
+$fff362_Result word table (LJSRR)
+$fff364_Result word table (LJSRR)
+$fff366_Result word table (LJSRR)
+$fff368_Result word table (LJSRR)
+$fff36a_Result word table (LJSRR)
+$fff36c_Result word table (LJSRR)
+$fff36e_Result word table (LJSRR)
+$fff370_Result word table (LJSRR)
+$fff372_Result word table (LJSRR)
+$fff374_Result word table (LJSRR)
+$fff376_Result word table (LJSRR)
+$fff378_Result word table (LJSRR)
+$fff37a_Result word table (LJSRR)
+$fff37c_Result word table (LJSRR)
+$fff37e_Result word table (LJSRR)
+$fff3b0_Result word table (LJURR)
+$fff3b2_Result word table (LJURR)
+$fff3b4_Result word table (LJURR)
+$fff3b6_Result word table (LJURR)
+$fff3b8_Result word table (LJURR)
+$fff3ba_Result word table (LJURR)
+$fff3bc_Result word table (LJURR)
+$fff3be_Result word table (LJURR)
+$fff3c0_Result word table (LJURR)
+$fff3c2_Result word table (LJURR)
+$fff3c4_Result word table (LJURR)
+$fff3c6_Result word table (LJURR)
+$fff3c8_Result word table (LJURR)
+$fff3ca_Result word table (LJURR)
+$fff3cc_Result word table (LJURR)
+$fff3ce_Result word table (LJURR)
+$fff3d0_Result word table (LJURR)
+$fff3d2_Result word table (LJURR)
+$fff3d4_Result word table (LJURR)
+$fff3d6_Result word table (LJURR)
+$fff3d8_Result word table (LJURR)
+$fff3da_Result word table (LJURR)
+$fff3dc_Result word table (LJURR)
+$fff3de_Result word table (LJURR)
+$fff3e0_Result word table (LJURR)
+$fff3e2_Result word table (LJURR)
+$fff3e4_Result word table (LJURR)
+$fff3e6_Result word table (LJURR)
+$fff3e8_Result word table (LJURR)
+$fff3ea_Result word table (LJURR)
+$fff3ec_Result word table (LJURR)
+$fff3ee_Result word table (LJURR)
+$fff3f0_Result word table (LJURR)
+$fff3f2_Result word table (LJURR)
+$fff3f4_Result word table (LJURR)
+$fff3f6_Result word table (LJURR)
+$fff3f8_Result word table (LJURR)
+$fff3fa_Result word table (LJURR)
+$fff3fc_Result word table (LJURR)
+$fff3fe_Result word table (LJURR)
+$fffc00_QSM module configuration register (QSMCR)
+$fffc02_QSM test register (QSMTEST)
+$fffc04_QSM interrupt level register (QILR)
+$fffc05_QSM interrupt vector registration (QIVR)
+$fffc08_SCI control register 0 (SCCR0)
+$fffc0a_SCI control register 1 (SCCR1)
+$fffc0c_SCI status register (SCSR)
+$fffc0e SCI data register (SCDR)
+$fffc0f_SCI data byte (SCDR)
+$fffc15_PQS data register (PORTQS)
+$fffc16_PQS pin assignment register (PQSPAR)
+$fffc17_PQS data direction register (DDRQS)
+$fffc18_SPI control register 0 (SPCR0)
+$fffc1a_SPI control register 1 (SPCR1)
+$fffc1c_SPI control register 2 (SPCR2)
+$fffc1e_SPI control register 3 (SPCR3)
+$fffc1f_SPI status register (SPSR)
+$fffd00_Receive RAM (RR[0:F])
+$fffd02_Receive RAM (RR[0:F])
+$fffd04_Receive RAM (RR[0:F])
+$fffd06_Receive RAM (RR[0:F])
+$fffd08_Receive RAM (RR[0:F])
+$fffd0a_Receive RAM (RR[0:F])
+$fffd0c_Receive RAM (RR[0:F])
+$fffd0e_Receive RAM (RR[0:F])
+$fffd10_Receive RAM (RR[0:F])
+$fffd12_Receive RAM (RR[0:F])
+$fffd14_Receive RAM (RR[0:F])
+$fffd16_Receive RAM (RR[0:F])
+$fffd18_Receive RAM (RR[0:F])
+$fffd1a_Receive RAM (RR[0:F])
+$fffd1c_Receive RAM (RR[0:F])
+$fffd1e_Receive RAM (RR[0:F])
+$fffd20_Transmit RAM (TR[0:F])
+$fffd22_Transmit RAM (TR[0:F])
+$fffd24_Transmit RAM (TR[0:F])
+$fffd26_Transmit RAM (TR[0:F])
+$fffd28_Transmit RAM (TR[0:F])
+$fffd2a_Transmit RAM (TR[0:F])
+$fffd2c_Transmit RAM (TR[0:F])
+$fffd2e_Transmit RAM (TR[0:F])
+$fffd30_Transmit RAM (TR[0:F])
+$fffd32_Transmit RAM (TR[0:F])
+$fffd34_Transmit RAM (TR[0:F])
+$fffd36_Transmit RAM (TR[0:F])
+$fffd38_Transmit RAM (TR[0:F])
+$fffd3a_Transmit RAM (TR[0:F])
+$fffd3c_Transmit RAM (TR[0:F])
+$fffd3e_Transmit RAM (TR[0:F])
+$fffd40_Command RAM (CR[0:F])
+$fffd42_Command RAM (CR[0:F])
+$fffd44_Command RAM (CR[0:F])
+$fffd46_Command RAM (CR[0:F])
+$fffd48_Command RAM (CR[0:F])
+$fffd4a_Command RAM (CR[0:F])
+$fffd4c_Command RAM (CR[0:F])
+$fffd4e_Command RAM (CR[0:F])
+$fffd50_Command RAM (CR[0:F])
+$fffd52_Command RAM (CR[0:F])
+$fffd54_Command RAM (CR[0:F])
+$fffd56_Command RAM (CR[0:F])
+$fffd58_Command RAM (CR[0:F])
+$fffd5a_Command RAM (CR[0:F])
+$fffd5c_Command RAM (CR[0:F])
+$fffd5e_Command RAM (CR[0:F])
+$fff400_BIUSM module configuration register (BIUMCR)
+$fff402_BIUSM test register (BIUTEST)
+$fff404_BIUSM time base register (BIUTBR)
+$fff408_CPSM control register (CPCR)
+$fff40a_CPSM test register (CPTR)
+$fff410_MCSM2 status/interrupt/control register (MCSM2SIC)
+$fff412_MCSM2 counter (MCSM2CNT)
+$fff414_MCSM2 modulus latch (MCSM2ML)
+$fff418_DASM3 status/interrupt/control register (DASM3SIC)
+$fff41a_DASM3 register a (DASM3A)
+$fff41c_DASM3 register b (DASM3B)
+$fff420_DASM4 status/interrupt/control register (DASM4SIC)
+$fff422_DASM4 register a (DASM4A)
+$fff424_DASM4 register b (DASM4B)
+$fff428_PWMSM5 status/interrupt/control register (PWM5SIC)
+$fff42a_PWMSM5 period (PWM5A)
+$fff42c_PWMSM5 pulse width (PWM5B)
+$fff42e_PWMSM5 counter (PWM5C)
+$fff430_PWMSM6 status/interrupt/control register (PWM6SIC)
+$fff432_PWMSM6 period (PWM6A)
+$fff434_PWMSM6 pulse width (PWM6B)
+$fff436_PWMSM6 counter (PWM6C)
+$fff438_PWMSM7 status/interrupt/control register (PWM7SIC)
+$fff43a_PWMSM7 period (PWM7A)
+$fff43c_PWMSM7 pulse width (PWM7B)
+$fff43e_PWMSM7 counter (PWM7C)
+$fff440_PWMSM8 status/interrupt/control register (PWM8SIC)
+$fff442_PWMSM8 period (PWM5A)
+$fff444_PWMSM8 pulse width (PWM8B)
+$fff446_PWMSM8 counter (PWM8C)
+$fff448_DASM9 status/interrupt/control register (DASM9SIC)
+$fff44a_DASM9 register a (DASM9A)
+$fff44c_DASM9 register b (DASM9B)
+$fff450_DASM10 status/interrupt/control register (DASM10SIC)
+$fff452_DASM10 register a (DASM10A)
+$fff454_DASM10 register b (DASM10B)
+$fff458_MCSM11 status/interrupt/control register (MCSM11SIC)
+$fff45a_MCSM11 counter (MCSM11CNT)
+$fff45c_MCSM11 modulus latch (MCSM11ML)
+$fff460_FCSM12 status/interrupt/control register (FCSM12SIC)
+$fff462_FCSM12 counter (FCSM12CNT)
+$fffe00_Module configuration register (TPUMCR)
+$fffe02_TPU Test configuration register (TCR)
+$fffe04_TPU development support control register (DSCR)
+$fffe06_TPU development support status register (DSSR)
+$fffe08_TPU interrupt configuration register (TICR)
+$fffe0a_TPU channel interrupt enable register (CIER)
+$fffe0c_TPU channel function selection register 0 (CFSR0)
+$fffe0e_TPU channel function selection register 1 (CFSR1)
+$fffe10_TPU channel function selection register 2 (CFSR2)
+$fffe12_TPU channel function selection register 3 (CFSR3)
+$fffe14_TPU host sequence register 0 (HSQR0)
+$fffe16_TPU host sequence register 1 (HSQR1)
+$fffe18_TPU host service request register 0 (HSSR0)
+$fffe1a_TPU host service request register 1 (HSSR1)
+$fffe1c_TPU channel priority register 0 (CPR0)
+$fffe1e_TPU channel priority register 1 (CPR1)
+$fffe20_TPU channel interrupt status register (CISR)
+$fffe22 TPU link register (LR)
+$fffe24_TPU service grant latch register (SGLR)
+$fffe26_TPU decoded channel number register (DCNR)
+$fffb00_TPURAM module configuration register (TRAMMCR)
+$fffb02_TPURAM test register (TRAMTST)
+$fffb04_TPURAM base address and status register (TRAMBAR)
+$fff080_TouCAN module configuration register (CANMCR)
+$fff082_TouCAN test configuration register (CANTCR)
+$fff084_TouCAN interrupt register (CANICR)
+$fff086_TouCAN control register 0 (CANCTRL0)
+$fff087_TouCAN control register 1 (CANCTRL1)
+$fff088_TouCAN prescaler divider register (PRESDIV)
+$fff089_TouCAN control register 2 (CANCTRL2)
+$fff08a_TouCAN free-running timer register (TIMER)
+$fff090_TouCAN receive global mask high (RXGMSKHI)
+$fff092_TouCAN receive global mask low (RXGMSKLO)
+$fff094_TouCAN receive buffer 14 mask high (RX14MSKHI)
+$fff096_TouCAN receive buffer 14 mask low (RX14MSKHI)
+$fff098_TouCAN receive buffer 15 mask high (RX15MSKHI)
+$fff09a_TouCAN receive buffer 15 mask low (RX15MSKHI)
+$fff0a0_TouCAN error and status register (ESTAT)
+$fff0a2_TouCAN interrupt masks (IMASK)
+$fff0a4_TouCAN interrupt flags (IFLAG)
+$fff0a6_TouCAN receive error counter (RXECTR)
+$fff0a7_TouCAN transmit error coutner (TXECTR)
+$fff100_CAN control/status bytes buffer 1
+$fff102_CAN ID high buffer 1
+$fff104_CAN ID low buffer 1
+$fff106 CAN byte 0 buffer 1
+$fff107 CAN byte 1 buffer 1
+$fff108 CAN byte 2 buffer 1
+$fff109 CAN byte 3 buffer 1
+$fff10a CAN byte 4 buffer 1
+$fff10b CAN byte 5 buffer 1
+$fff10c CAN byte 6 buffer 1
+$fff10d CAN byte 7 buffer 1
+$fff10e_CAN buffer 1
+$fff10f_CAN buffer 1
+$fff110_CAN control/status bytes buffer 2
+$fff112_CAN ID high buffer 2
+$fff114_CAN ID low buffer 2
+$fff116 CAN byte 0 buffer 2
+$fff117 CAN byte 1 buffer 2
+$fff118 CAN byte 2 buffer 2
+$fff119 CAN byte 3 buffer 2
+$fff11a CAN byte 4 buffer 2
+$fff11b CAN byte 5 buffer 2
+$fff11c CAN byte 6 buffer 2
+$fff11d CAN byte 7 buffer 2
+$fff11e_CAN buffer 2
+$fff11f_CAN buffer 2
+$fff120_CAN control/status bytes buffer 3
+$fff122_CAN ID high buffer 3
+$fff124_CAN ID low buffer 3
+$fff126 CAN byte 0 buffer 3
+$fff127 CAN byte 1 buffer 3
+$fff128 CAN byte 2 buffer 3
+$fff129 CAN byte 3 buffer 3
+$fff12a CAN byte 4 buffer 3
+$fff12b CAN byte 5 buffer 3
+$fff12c CAN byte 6 buffer 3
+$fff12d CAN byte 7 buffer 3
+$fff12e_CAN buffer 3
+$fff12f_CAN buffer 3
+$fff130_CAN control/status bytes buffer 4
+$fff132_CAN ID high buffer 4
+$fff134_CAN ID low buffer 4
+$fff136 CAN byte 0 buffer 4
+$fff137 CAN byte 1 buffer 4
+$fff138 CAN byte 2 buffer 4
+$fff139 CAN byte 3 buffer 4
+$fff13a CAN byte 4 buffer 4
+$fff13b CAN byte 5 buffer 4
+$fff13c CAN byte 6 buffer 4
+$fff13d CAN byte 7 buffer 4
+$fff13e_CAN buffer 4
+$fff13f_CAN buffer 4
+$fff140_CAN control/status bytes buffer 5
+$fff142_CAN ID high buffer 5
+$fff144_CAN ID low buffer 5
+$fff146 CAN byte 0 buffer 5
+$fff147 CAN byte 1 buffer 5
+$fff148 CAN byte 2 buffer 5
+$fff149 CAN byte 3 buffer 5
+$fff14a CAN byte 4 buffer 5
+$fff14b CAN byte 5 buffer 5
+$fff14c CAN byte 6 buffer 5
+$fff14d CAN byte 7 buffer 5
+$fff14e_CAN buffer 5
+$fff14f_CAN buffer 5
+$fff150_CAN control/status bytes buffer 6
+$fff152_CAN ID high buffer 6
+$fff154_CAN ID low buffer 6
+$fff156 CAN byte 0 buffer 6
+$fff157 CAN byte 1 buffer 6
+$fff158 CAN byte 2 buffer 6
+$fff159 CAN byte 3 buffer 6
+$fff15a CAN byte 4 buffer 6
+$fff15b CAN byte 5 buffer 6
+$fff15c CAN byte 6 buffer 6
+$fff15d CAN byte 7 buffer 6
+$fff15e_CAN buffer 6
+$fff15f_CAN buffer 6
+$fff160_CAN control/status bytes buffer 7
+$fff162_CAN ID high buffer 7
+$fff164_CAN ID low buffer 7
+$fff166 CAN byte 0 buffer 7
+$fff167 CAN byte 1 buffer 7
+$fff168 CAN byte 2 buffer 7
+$fff169 CAN byte 3 buffer 7
+$fff16a CAN byte 4 buffer 7
+$fff16b CAN byte 5 buffer 7
+$fff16c CAN byte 6 buffer 7
+$fff16d CAN byte 7 buffer 7
+$fff16e_CAN buffer 7
+$fff16f_CAN buffer 7
+$fff170_CAN control/status bytes buffer 8
+$fff172_CAN ID high buffer 8
+$fff174_CAN ID low buffer 8
+$fff176 CAN byte 0 buffer 8
+$fff177 CAN byte 1 buffer 8
+$fff178 CAN byte 2 buffer 8
+$fff179 CAN byte 3 buffer 8
+$fff17a CAN byte 4 buffer 8
+$fff17b CAN byte 5 buffer 8
+$fff17c CAN byte 6 buffer 8
+$fff17d CAN byte 7 buffer 8
+$fff17e_CAN buffer 8
+$fff17f_CAN buffer 8
+$fff180_CAN control/status bytes buffer 9
+$fff182_CAN ID high buffer 9
+$fff184_CAN ID low buffer 9
+$fff186 CAN byte 0 buffer 9
+$fff187 CAN byte 1 buffer 9
+$fff188 CAN byte 2 buffer 9
+$fff189 CAN byte 3 buffer 9
+$fff18a CAN byte 4 buffer 9
+$fff18b CAN byte 5 buffer 9
+$fff18c CAN byte 6 buffer 9
+$fff18d CAN byte 7 buffer 9
+$fff18e_CAN buffer 9
+$fff18f_CAN buffer 9
+$fff190_CAN control/status bytes buffer 10
+$fff192_CAN ID high buffer 10
+$fff194_CAN ID low buffer 10
+$fff196 CAN byte 0 buffer 10
+$fff197 CAN byte 1 buffer 10
+$fff198 CAN byte 2 buffer 10
+$fff199 CAN byte 3 buffer 10
+$fff19a CAN byte 4 buffer 10
+$fff19b CAN byte 5 buffer 10
+$fff19c CAN byte 6 buffer 10
+$fff19d CAN byte 7 buffer 10
+$fff19e_CAN buffer 10
+$fff19f_CAN buffer 10
+$fff1a0_CAN control/status bytes buffer 11
+$fff1a2_CAN ID high buffer 11
+$fff1a4_CAN ID low buffer 11
+$fff1a6 CAN byte 0 buffer 11
+$fff1a7 CAN byte 1 buffer 11
+$fff1a8 CAN byte 2 buffer 11
+$fff1a9 CAN byte 3 buffer 11
+$fff1aa CAN byte 4 buffer 11
+$fff1ab CAN byte 5 buffer 11
+$fff1ac CAN byte 6 buffer 11
+$fff1ad CAN byte 7 buffer 11
+$fff1ae_CAN buffer 11
+$fff1af_CAN buffer 11
+$fff1b0_CAN control/status bytes buffer 12
+$fff1b2_CAN ID high buffer 12
+$fff1b4_CAN ID low buffer 12
+$fff1b6 CAN byte 0 buffer 12
+$fff1b7 CAN byte 1 buffer 12
+$fff1b8 CAN byte 2 buffer 12
+$fff1b9 CAN byte 3 buffer 12
+$fff1ba CAN byte 4 buffer 12
+$fff1bb CAN byte 5 buffer 12
+$fff1bc CAN byte 6 buffer 12
+$fff1bd CAN byte 7 buffer 12
+$fff1be_CAN buffer 12
+$fff1bf_CAN buffer 12
+$fff1c0_CAN control/status bytes buffer 13
+$fff1c2_CAN ID high buffer 13
+$fff1c4_CAN ID low buffer 13
+$fff1c6 CAN byte 0 buffer 13
+$fff1c7 CAN byte 1 buffer 13
+$fff1c8 CAN byte 2 buffer 13
+$fff1c9 CAN byte 3 buffer 13
+$fff1ca CAN byte 4 buffer 13
+$fff1cb CAN byte 5 buffer 13
+$fff1cc CAN byte 6 buffer 13
+$fff1cd CAN byte 7 buffer 13
+$fff1ce_CAN buffer 13
+$fff1cf_CAN buffer 13
+$fff1d0_CAN control/status bytes buffer 14
+$fff1d2_CAN ID high buffer 14
+$fff1d4_CAN ID low buffer 14
+$fff1d6 CAN byte 0 buffer 14
+$fff1d7 CAN byte 1 buffer 14
+$fff1d8 CAN byte 2 buffer 14
+$fff1d9 CAN byte 3 buffer 14
+$fff1da CAN byte 4 buffer 14
+$fff1db CAN byte 5 buffer 14
+$fff1dc CAN byte 6 buffer 14
+$fff1dd CAN byte 7 buffer 14
+$fff1de_CAN buffer 14
+$fff1df_CAN buffer 14
+$fff1e0_CAN control/status bytes buffer 15
+$fff1e2_CAN ID high buffer 15
+$fff1e4_CAN ID low buffer 15
+$fff1e6 CAN byte 0 buffer 15
+$fff1e7 CAN byte 1 buffer 15
+$fff1e8 CAN byte 2 buffer 15
+$fff1e9 CAN byte 3 buffer 15
+$fff1ea CAN byte 4 buffer 15
+$fff1eb CAN byte 5 buffer 15
+$fff1ec CAN byte 6 buffer 15
+$fff1ed CAN byte 7 buffer 15
+$fff1ee_CAN buffer 15
+$fff1ef_CAN buffer 15
+$fff1f0_CAN control/status bytes buffer 16
+$fff1f2_CAN ID high buffer 16
+$fff1f4_CAN ID low buffer 16
+$fff1f6 CAN byte 0 buffer 16
+$fff1f7 CAN byte 1 buffer 16
+$fff1f8 CAN byte 2 buffer 16
+$fff1f9 CAN byte 3 buffer 16
+$fff1fa CAN byte 4 buffer 16
+$fff1fb CAN byte 5 buffer 16
+$fff1fc CAN byte 6 buffer 16
+$fff1fd CAN byte 7 buffer 16
+$fff1fe_CAN buffer 16
+$fff1ff_CAN buffer 16
+$81162_store incoming serial data
+$807c8_number of serial bytes recv'd
+$811e2_outgoing serial packet
+$807ce_serial packet send position
+$807cc_serial packet send size
+$807bc_OBD init state counter
+$803ec_OBD related to DTC which triggered freeze frame
+$803be_OBD related to fuel system status
+$801c6_OBD related to engine on or power on
+$80d22_OBD calc'd engine load
+$8012a_OBD coolant temp
+$80414_OBD short term fuel trim
+$80416_OBD long term fuel trim
+$801c6_OBD rpm
+$8036a_OBD vehicle speed
+$8026c_OBD timing advance
+$80128_OBD intake air temp
+$80ce6_OBD mass airflow rate
+$80132_OBD throttle position
+$86c99_OBD oxygen sensors present
+$8013a_OBD oxygen sensor 1 voltage
+$8013c_OBD oxygen sensor 2 voltage
+$86c9a_OBD standards conformation
+$80e86_OBD run time since engine start
+$8112a_OBD run time with MIL on
+$802e2_OBD commanded evap purge
+$80394_OBD fuel tank level
+$80130_OBD absolute barometric pressure
+$80146_OBD control module voltage
+$80d24_OBD absolute load value
+$8405b_OBD relative throttle position scaling
+$80e3e_OBD relative throttle position subtract
+$803f0_OBD freeze frame fuel system status
+$803f2_OBD freeze frame calc'd engine load
+$803fe_OBD freeze frame coolant temp
+$803fa_OBD freeze frame STFT
+$803fc_OBD freeze frame LTFT
+$803ee_OBD freeze frame engine RPM
+$803f4_OBD freeze frame vehicle speed
+$803f6_OBD freeze frame mass airflow rate
+$803f8_OBD freeze frame throttle position
+$80834_OBD related to DTC storage
+$80832_OBD related to DTC storage
+$81264_OBD related to DTC storage
+$841fb_OBD mode5 PID1
+$841fd_OBD mode5 PID2
+$86d0b_OBD mode5 PID3
+$86d09_OBD mode5 PID4
+$80775_OBD mode5 PID5 byte1
+$86c69_OBD mode5 PID5 byte2
+$80773_OBD mode5 PID6 byte1
+$86c67_OBD mode5 PID6 byte2
+$8077b_OBD mode5 PID7
+$80779_OBD mode5 PID8
+$80464_OBD mode6 PID1 word1
+$86c5a_OBD mode6 PID1 word2
+$80c54_OBD mode6 PID2 byte1
+$86c58_OBD mode6 PID2 byte2
+$80c52_OBD mode6 PID3 byte1
+$80c56_OBD mode6 PID3 byte2
+$803d6_OBD mode6 PID4 word1
+$86c5e_OBD mode6 PID4 word2
+$805fe_OBD mode6 PID5 word1
+$805bc_OBD mode6 PID5 byte2
+$80878_OBD related to pending DTC storage
+$80876_OBD related to pending DTC storage
+$81364_OBD related to pending DTC storage
+$86cd4_OBD related to mode8 PID1
+$80d6a_OBD related to mode8 PID1
+$80d6c_OBD related to mode8 PID1
+$80862_OBD related to mode8 PID1, and mode2f
+$80c46_OBD related to mode22 PID513
+$817a8_OBD related to mode22 PID515
+$808ee_OBD related to mode22 PID516
+$808ba_OBD related to mode22 PID517
+$80916_OBD related to mode22 PID518
+$80b7a_OBD related to mode22 PID519
+$800e4_OBD related to mode22 PID520
+$80b78_OBD related to mode22 PID521
+$8045a_OBD related to mode22 PID522
+$80458_OBD related to mode22 PID523
+$80388_OBD related to mode22 PID524
+$808e8_OBD related to mode22 PID525
+$80138_OBD related to mode22 PID530
+$808d8_OBD related to mode22 PID531
+$80002_OBD related to mode22 PID532
+$817b0_OBD related to mode22 PID536
+$817b2_OBD related to mode22 PID537
+$817b4_OBD related to mode22 PID538
+$817b6_OBD related to mode22 PID539
+$80ab0_OBD related to mode22 PID549-572
+$80b10_OBD related to mode22 PID 577
+$80b20_OBD related to mode22 PID 586
+$80b2a_OBD related to mode22 PID595
+$80b2c_OBD related to mode22 PID596
+$80b30_OBD related to mode22 PID598
+$80b32_OBD related to mode22 PID599
+$80b36_OBD related to mode22 PID601
+$80b38_OBD related to mode22 PID602
+$80b3c_OBD related to mode22 PID603
+$80b3e_OBD related to mode22 PID605
+$80b42_OBD related to mode22 PID606
+$80b44_OBD related to mode22 PID609
+$80b48_OBD related to mode22 PID610
+$80b4a_OBD related to mode22 PID612
+$80b4c_OBD related to mode22 PID613
+$80b4e_OBD related to mode22 PID614
+$80b50_OBD related to mode22 PID615
+$80b64_OBD related to mode22 PID616
+$80b66_OBD related to mode22 PID617
+$80b68_OBD related to mode22 PID618
+$80b6a_OBD related to mode22 PID629
+$80b52_OBD related to mode22 PID620
+$80b6c_OBD related to mode22 PID621
+$80860_OBD related to mode2f
+$80868_OBD related to mode2f

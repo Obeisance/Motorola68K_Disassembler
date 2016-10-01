@@ -8310,7 +8310,7 @@ void numberIsSmallerInJumpAddresses(long number) {
 	rename("temp.txt","branchOrJumpAddresses.txt");
 }
 
-bool  writeVBR_table(string assemblyLine, long currentAddress)
+bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddresses)
 {
 	//input a string which contains the MOVEC to VBR command
 	//the function will do one of two things: if the  VBR table
@@ -8486,20 +8486,21 @@ bool  writeVBR_table(string assemblyLine, long currentAddress)
 
 		//if it is at a higher address, mark that address and the next 4*256 bytes in the
 		//jump or branch table. Also add the addresses in that table (each set of 4 bytes is an address)
-		ofstream branchAddresses("branchOrJumpAddresses.txt", ios::app);//store the addresses that the disassembled code branches to
-		branchAddresses.close();
+		//ofstream branchAddresses("branchOrJumpAddresses.txt", ios::app);//store the addresses that the disassembled code branches to
+		//branchAddresses.close();
 		if(addressInRegister > currentAddress)
 		{
 			//loop through the addresses and add them to the jump addresses file
 			for(int l = 0; l <= 255*4; l++)
 			{
-				if(!numberIsPresentInJumpAddresses(addressInRegister+l))
+				jumpAddresses = addToJumpAddresses(jumpAddresses, addressInRegister+l);
+				/*if(!numberIsPresentInJumpAddresses(addressInRegister+l))
 				{
 					//if the number is not present in the branch or jump file, add it
 					branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
 					branchAddresses << addressInRegister+l << '\n';
 					branchAddresses.close();
-				}
+				}*/
 			}
 
 			//next, read the addresses in those locations and add those to the branch or jump file
@@ -8529,12 +8530,13 @@ bool  writeVBR_table(string assemblyLine, long currentAddress)
 				if(addressInWhole > currentAddress)
 				{
 				//check to see if the address is in the jump or branch file already
-					if(!numberIsPresentInJumpAddresses(addressInWhole))
+					jumpAddresses = addToJumpAddresses(jumpAddresses, addressInWhole);
+					/*if(!numberIsPresentInJumpAddresses(addressInWhole))
 					{
 						branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
 						branchAddresses << addressInWhole << '\n';
 						branchAddresses.close();
-					}
+					}*/
 				}
 				else
 				{
@@ -8781,12 +8783,13 @@ bool  writeVBR_table(string assemblyLine, long currentAddress)
 				if(addressInWhole > currentAddress)
 				{
 					//check to see if the address is in the jump or branch file already
-					if(!numberIsPresentInJumpAddresses(addressInWhole))
+					jumpAddresses = addToJumpAddresses(jumpAddresses, addressInWhole);
+					/*if(!numberIsPresentInJumpAddresses(addressInWhole))
 					{
 						branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
 						branchAddresses << addressInWhole << '\n';
 						branchAddresses.close();
-					}
+					}*/
 				}
 				else
 				{
@@ -8847,4 +8850,216 @@ bool  writeVBR_table(string assemblyLine, long currentAddress)
 		}
 	}
 	return returnTrue;
+}
+
+string addToJumpAddresses(string jumpAddresses, long addressToAdd)
+{
+	//checks to see if addressToAdd is already present in the
+	//jumpAddresses string, if it is not, add it into the string
+	//in numerical order
+	string newJumpAddresses = "";
+	//first, check to see if the addressToAdd is already present
+	if(!numberIsPresentInJumpAddresses(jumpAddresses, addressToAdd))
+	{
+		string tempString = "";
+		int tempStringEnd = 0;
+		long addressFromList = 0;
+		long jumpAddressStringLength = jumpAddresses.length();
+		//then convert the input number to a string
+		char stringByte [20];//buffer for the conversion
+		string value = itoa(addressToAdd,stringByte,10);//convert to string
+
+		for(int i = 0; i < jumpAddressStringLength; i++)
+		{
+			//read in each progressive address
+			if(jumpAddresses[i] == ' ')//denotes beginning of address entry
+			{
+				for(int j = i+1; j < jumpAddressStringLength; j++)
+				{
+					if(jumpAddresses[j] != '-')//denoted end of address entry
+					{
+						tempString.push_back(jumpAddresses[j]);
+					}
+					else
+					{
+						tempStringEnd = j;
+						break;
+					}
+				}
+				addressFromList = stringDec_to_int(tempString);
+				//cout << "address from list dec: " << addressFromList << " address string: " << tempString << '\n';
+
+				if(addressFromList > addressToAdd)
+				{
+					//add the address to the list before the addressFromList position
+					//first, split the jumpAddresses array into two parts
+					string tempFirstHalf = jumpAddresses.substr(0,i);
+					string tempSecondHalf = jumpAddresses.substr(i,jumpAddressStringLength-i);
+					//then combine all the parts, including the start and end flags
+					newJumpAddresses.append(tempFirstHalf);
+					newJumpAddresses.push_back(' ');
+					newJumpAddresses.append(value);
+					newJumpAddresses.push_back('-');
+					newJumpAddresses.append(tempSecondHalf);
+					//cout << "1: " << tempFirstHalf << " 2: " << value << " 3: " << tempSecondHalf << '\n';
+					break;
+				}
+				else
+				{
+					i = tempStringEnd;
+					tempString = "";
+				}
+			}
+		}
+		//in case the input number is higher than any address in the list
+		//add it to the end
+		if(tempString == "")
+		{
+			newJumpAddresses = jumpAddresses;
+			newJumpAddresses.push_back(' ');
+			newJumpAddresses.append(value);
+			newJumpAddresses.push_back('-');
+		}
+	}
+	else
+	{
+		//if the number is already present, do nothing
+		newJumpAddresses = jumpAddresses;
+	}
+	return newJumpAddresses;
+}
+
+string removeLowerJumpAddresses(string jumpAddresses, long addressThreshold)
+{
+	//removes from jumpAddresses the addresses below addressThreshold
+	string newJumpAddresses = jumpAddresses;
+	string tempString = "";
+	int tempStringEnd = 0;
+	long addressFromList = 0;
+	long jumpAddressStringLength = jumpAddresses.length();
+	for(int i = 0; i < jumpAddressStringLength; i++)
+	{
+		//read in each progressive address
+		if(jumpAddresses[i] == ' ')//denotes beginning of address entry
+		{
+			for(int j = i+1; j < jumpAddressStringLength; j++)
+			{
+				if(jumpAddresses[j] != '-')//denoted end of address entry
+				{
+					tempString.push_back(jumpAddresses[j]);
+				}
+				else
+				{
+					tempStringEnd = j;
+					break;
+				}
+			}
+			addressFromList = stringDec_to_int(tempString);
+			if(addressFromList > addressThreshold)
+			{
+				//create a new string
+				newJumpAddresses = jumpAddresses.substr(i,jumpAddressStringLength-i);
+				break;
+			}
+			else
+			{
+				i = tempStringEnd;
+				tempString = "";
+			}
+		}
+	}
+	return newJumpAddresses;
+}
+
+string removeHigherJumpAddresses(string jumpAddresses, long addressThreshold)
+{
+	//removes from jumpAddresses the addresses above addressThreshold
+	string newJumpAddresses = jumpAddresses;
+	string tempString = "";
+	int tempStringEnd = 0;
+	long addressFromList = 0;
+	long jumpAddressStringLength = jumpAddresses.length();
+	for(int i = 0; i < jumpAddressStringLength; i++)
+	{
+		//read in each progressive address
+		if(jumpAddresses[i] == ' ')//denotes beginning of address entry
+		{
+			for(int j = i+1; j < jumpAddressStringLength; j++)
+			{
+				if(jumpAddresses[j] != '-')//denoted end of address entry
+				{
+					tempString.push_back(jumpAddresses[j]);
+				}
+				else
+				{
+					tempStringEnd = j;
+					break;
+				}
+			}
+			addressFromList = stringDec_to_int(tempString);
+			if(addressFromList > addressThreshold)
+			{
+				//create a new string
+				newJumpAddresses = jumpAddresses.substr(0,i);
+				break;
+			}
+			else
+			{
+				i = tempStringEnd;
+				tempString = "";
+			}
+		}
+	}
+	return newJumpAddresses;
+}
+
+bool numberIsPresentInJumpAddresses(string jumpAddresses, long address)
+{
+	//returns true if address is present in jumpAddresses
+	bool isPresent = false;
+	string tempString = "";
+	int tempStringEnd = 0;
+	long addressFromList = 0;
+	long jumpAddressStringLength = jumpAddresses.length();
+	//cout << jumpAddressStringLength << ", " << address << ", " << jumpAddresses << '\n';
+	for(int i = 0; i < jumpAddressStringLength; i++)
+	{
+		//read in each progressive address
+		if(jumpAddresses[i] == ' ')//denotes beginning of address entry
+		{
+			for(int j = i+1; j < jumpAddressStringLength; j++)
+			{
+				if(jumpAddresses[j] != '-')//denoted end of address entry
+				{
+					tempString.push_back(jumpAddresses[j]);
+				}
+				else
+				{
+					tempStringEnd = j;
+					break;
+				}
+			}
+			addressFromList = stringDec_to_int(tempString);
+			//cout << addressFromList << ' ';
+			if(addressFromList == address)
+			{
+				isPresent = true;
+				break;
+			}
+			else if(addressFromList > address)
+			{
+				//the list is ordered in increasing value
+				//if we're already higher than the
+				//value of interest, it is not present
+				break;
+			}
+			else
+			{
+				i = tempStringEnd;
+				tempString = "";
+			}
+		}
+	}
+	//cout << '\n';
+	return isPresent;
 }
