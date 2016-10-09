@@ -42,9 +42,7 @@ This code has many faults:
 	potentially making them erroneous
 
 There is also a linker program which will label memory addresses within the 
-assembly commands. This program takes in a file and searches for one address
-per line (if you have multiple addresses that need labeled on each line, run
-the program twice) and labels it. I have included an example for how to 
+assembly commands. I have included an example for how to 
 create the text file with addresses and labels (ECU code from 6-06-2006 address list.txt)
 
 -Obeisance
