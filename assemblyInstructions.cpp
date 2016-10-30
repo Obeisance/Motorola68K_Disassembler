@@ -6745,7 +6745,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		outputString.append(
 				"; data register lookup and interpolate (no rounding if TBLSN) signed");
 		//TBLS,TBLSN data register lookup and interpolate
-	} else if (commandArrayString == "TBLU_TBLN_table") {
+	} else if (commandArrayString == "TBLU_TBLUN_table") {
 		//TBLU,TBLUN table lookup and interpolation
 		//unsigned
 		//rounded:
@@ -7601,7 +7601,7 @@ int guessCommand(string commandString, string &outputString, bool &multipleMatch
 	char tblu_tblun_table_extra[16] = { '0', 'x', 'x', 'x', '0', 'x', '0', '1',
 			'x', 'x', '0', '0', '0', '0', '0', '0' };
 	char tblu_tblun_register_extra[16] = { '0', 'x', 'x', 'x', '0', 'x', '0',
-			'1', 'x', 'x', '0', '0', '0', 'x', 'x', 'x' };
+			'0', 'x', 'x', '0', '0', '0', 'x', 'x', 'x' };
 
 	//combine the extra bits into a lookup array
 	char *definedExtra[13] = { eight_bit_byte, chk2_extra, cmp2_extra,
