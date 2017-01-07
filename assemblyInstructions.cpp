@@ -1418,7 +1418,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 			outputString.append(".W");
 			baseInstructionByteNumber = 4;
 		} else if (displacement == "11111111") {
-			string displacement = retrieveBitsFromInstruction(-1, 32,
+			displacement = retrieveBitsFromInstruction(-1, 32,
 					commandString);
 			outputString.append(".L");
 			baseInstructionByteNumber = 6;
