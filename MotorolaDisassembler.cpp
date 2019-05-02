@@ -103,6 +103,7 @@ int main() {
 
 	  bool notFinished = true;//a flag to indicate we're done
 	  bool multipleMatchedCommands = false;//a flag to indicate that a piece of binary data matches more than one assembly machine instruction
+	  bool resetVBRwritten = false;//a flag to indicate that we've written the reset vector table
 	  int bytesToShift = 2;//track the number of bytes to the next instruction
 	  string SP = "";//stack pointer location
 	  //int stackPointer = 0;
@@ -113,23 +114,27 @@ int main() {
 	  long seekPosition = 0;//store where we last accessed the binary file
 
 	  //prepare for the first address to start looking for commands
-	  long addressOfInterest = 0;
+	  long addressOfInterest = startAddress;//start looking for instructions at the first address in the file
 	  if(startAddress == 0)
 	  {
-		  //addresses 4-7 contain the address of the first instruction
+		  //addresses 4-7 contain the address of the first instruction -> add this to the
+		  //protected address list
 		  long addressMultiplier = 16777216;
+		  long reset_PC = 0;
 		  for(int i = 4; i < 8; i++)
 		  {
 			  string byteValString = decimalVersionReader(i);//extract the byte from the file as a string
 			  int byteVal = stringDec_to_int(byteValString);//convert the string Decimal to an int
-			  addressOfInterest += byteVal*addressMultiplier;//add to the address of interest
+			  //addressOfInterest += byteVal*addressMultiplier;//add to the address of interest
+			  reset_PC += byteVal*addressMultiplier;//add to the address of interest
 			  addressMultiplier = addressMultiplier/256;
 		  }
+		  jumpLandingPoints = addToJumpAddresses(jumpLandingPoints, reset_PC);//this makes sure we always include disassembly at the correct line
 	  }
-	  else
+	  /*else
 	  {
 		  addressOfInterest = startAddress;//otherwise, start looking for instructions at the first address in the file
-	  }
+	  }*/
 
 	  cout << "Disassembling... please wait" << '\n';
 	  //loop until we decide that all instructions have been interpreted
@@ -174,6 +179,13 @@ int main() {
 		  if(addressOfInterest >= endAddress || multipleMatchedCommands == true)
 		  {
 			  notFinished = false;
+			  if(!resetVBRwritten)
+			  {
+				  //if we have not written the reset vector table, write it now
+				  writeAssembly.close();//close the file to store our disassembled code so it saves current progress
+				  writeVBR_table("write reset VBR", addressOfInterest, jumpLandingPoints);
+				  writeAssembly.open("assemblyVersion.txt", ios::app);//reopen the file to store our disassembled code
+			  }
 		  }
 
 		  //if we have extracted the 128 bits to check, compare
@@ -234,7 +246,10 @@ int main() {
 						  //branchAddresses.close();
 						  if(writeVBR_table(assemblySyntax, addressOfInterest, jumpLandingPoints))
 						  {
-
+							  if(addressOfInterest == 0)
+							  {
+								  resetVBRwritten = true;
+							  }
 						  }
 						  jumpLandingPoints = removeHigherJumpAddresses(jumpLandingPoints,endAddress);
 						  writeAssembly.open("assemblyVersion.txt", ios::app);//reopen the file to store our disassembled code
@@ -267,6 +282,14 @@ int main() {
 						  if(displacementBytes > 0 && jump <= endAddress/*&& !alreadyPresent*/) {
 							  //branchAddresses << jump << '\n';
 							  jumpLandingPoints = addToJumpAddresses(jumpLandingPoints, jump);
+
+							  /*
+							  //troubleshoot some misbehaving address protection
+							  if(jump > 0x2018e && jump < 0x20194)
+							  {
+								  cout << (int) addressOfInterest << ' ' << (int) jump << '\n';
+							  }
+							  */
 						  }
 					  }
 					  //cout << "addr: " << addressOfInterest << " jump: " << jumpLandingPoints << '\n';

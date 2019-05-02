@@ -4756,6 +4756,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		string size = retrieveBitsFromInstruction(7, 2, commandString);
 		string ir = retrieveBitsFromInstruction(5, 1, commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
+		regis = stringBitsToNumber(regis);
 
 		int baseInstructionByteNumber = 2;
 
@@ -4900,6 +4901,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		string size = retrieveBitsFromInstruction(7, 2, commandString);
 		string ir = retrieveBitsFromInstruction(5, 1, commandString);
 		string regis = retrieveBitsFromInstruction(2, 3, commandString);
+		regis = stringBitsToNumber(regis);
 
 		int baseInstructionByteNumber = 2;
 
@@ -8324,6 +8326,7 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 	//as are the addresses listed in the table.
 
 	bool returnTrue = true;
+	bool overrideResetVector = false;
 	//first, we need to figure out what address is being pushed into the VBR
 	//so we need to figure out what register stores that value that is being pushed to VBR
 	int lengthOfAssemblyLine = assemblyLine.length();
@@ -8334,6 +8337,11 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 		if(command == "MOVEC")
 		{
 			fromRegister = assemblyLine.substr(i+6,2);//2 chars past the MOVEC command is where the register is listed
+			break;
+		}
+		else if(assemblyLine == "write reset VBR")
+		{
+			overrideResetVector = true;
 			break;
 		}
 	}
@@ -8347,7 +8355,7 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 	}
 	//cout << "from register: " << fromRegister << '\n';
 
-	if(returnTrue == true) {
+	if(returnTrue == true || overrideResetVector) {
 		//next we must figure out what is in this address register
 		//start by scanning through the assembly line file to find where the VBR
 		//command is at, then working backwards from there looking for the An
@@ -8373,7 +8381,7 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 		//line now contains the last command issued
 		//check to see if a given line pertains to the register of interest
 		bool notFound = true;
-		while(notFound == true)
+		while(notFound == true && !overrideResetVector)
 		{
 			//close, then open the file for reading (resets the read-in position)
 			readAssembly.close();
@@ -8494,6 +8502,15 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 			for(int l = 0; l <= 255*4; l++)
 			{
 				jumpAddresses = addToJumpAddresses(jumpAddresses, addressInRegister+l);
+
+				/*
+				//troubleshoot some misbehaving address protection
+				if(addressInRegister+l > 0x2018e && addressInRegister+l < 0x20194)
+				{
+					cout << (int) currentAddress << ' ' << (int) addressInRegister+l << '\n';
+				}
+				*/
+
 				/*if(!numberIsPresentInJumpAddresses(addressInRegister+l))
 				{
 					//if the number is not present in the branch or jump file, add it
@@ -8531,6 +8548,15 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 				{
 				//check to see if the address is in the jump or branch file already
 					jumpAddresses = addToJumpAddresses(jumpAddresses, addressInWhole);
+
+					/*
+					//troubleshoot some misbehaving address protection
+					if(addressInWhole > 0x2018e && addressInWhole < 0x20194)
+					{
+						cout << (int) currentAddress << ' ' << (int) addressInWhole << '\n';
+					}
+					 */
+
 					/*if(!numberIsPresentInJumpAddresses(addressInWhole))
 					{
 						branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
@@ -8784,6 +8810,15 @@ bool  writeVBR_table(string assemblyLine, long currentAddress, string &jumpAddre
 				{
 					//check to see if the address is in the jump or branch file already
 					jumpAddresses = addToJumpAddresses(jumpAddresses, addressInWhole);
+
+					/*
+					//troubleshoot some misbehaving address protection
+					if(addressInWhole > 0x2018e && addressInWhole < 0x20194)
+					{
+						cout << (int) currentAddress << ' ' << (int) addressInWhole << '\n';
+					}
+					*/
+
 					/*if(!numberIsPresentInJumpAddresses(addressInWhole))
 					{
 						branchAddresses.open("branchOrJumpAddresses.txt", ios::app);//re-open for writing
