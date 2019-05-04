@@ -895,38 +895,42 @@ int constructInstructionString(string commandArrayString, string commandString,
 		} else {
 			baseInstructionByteNumber = 0;
 		}
-		outputString.append(conditionCodeSymbol);
 
-		//determine size
-		if (displacement == "00000000" && baseInstructionByteNumber > 0) {
-			displacement = retrieveBitsFromInstruction(-1, 16, commandString);
-			outputString.append(".W");
-			baseInstructionByteNumber = 4;
-		} else if (displacement == "11111111") {
-			displacement = retrieveBitsFromInstruction(-1, 32,
-					commandString);
-			outputString.append(".L");
-			baseInstructionByteNumber = 6;
-		} else if (baseInstructionByteNumber > 0) {
-			outputString.append(".B");
+
+		if(baseInstructionByteNumber != 0)
+		{
+			outputString.append(conditionCodeSymbol);
+
+			//determine size
+			if (displacement == "00000000" && baseInstructionByteNumber > 0) {
+				displacement = retrieveBitsFromInstruction(-1, 16, commandString);
+				outputString.append(".W");
+				baseInstructionByteNumber = 4;
+			} else if (displacement == "11111111") {
+				displacement = retrieveBitsFromInstruction(-1, 32, commandString);
+				outputString.append(".L");
+				baseInstructionByteNumber = 6;
+			} else if (baseInstructionByteNumber > 0) {
+				outputString.append(".B");
+			}
+			string complement = twosComplement(displacement);
+			displacement = stringBitsToNumber(displacement); //convert data to decimal
+			displacement = stringNumber_to_hex(displacement); //convert decimal to hex
+
+			outputString.append(" $");
+			outputString.append(displacement);
+
+			if (baseInstructionByteNumber != 0) {
+				correctForm = baseInstructionByteNumber;
+			}
+
+			outputString.push_back('\t');
+			outputString.append("; if condition (");
+			outputString.append(condition);
+			outputString.append(") true, then PC + 2 + dn -> PC, twos complement = ");
+			outputString.append(complement);
+			outputString.push_back(' ');
 		}
-		string complement = twosComplement(displacement);
-		displacement = stringBitsToNumber(displacement); //convert data to decimal
-		displacement = stringNumber_to_hex(displacement); //convert decimal to hex
-
-		outputString.append(" $");
-		outputString.append(displacement);
-
-		if (baseInstructionByteNumber != 0) {
-			correctForm = baseInstructionByteNumber;
-		}
-
-		outputString.push_back('\t');
-		outputString.append("; if condition (");
-		outputString.append(condition);
-		outputString.append(") true, then PC + 2 + dn -> PC, twos complement = ");
-		outputString.append(complement);
-		outputString.push_back(' ');
 		//Bcc
 	} else if (commandArrayString == "BCHG_bit") {
 		//BCHG bit number dynamic in register
@@ -1247,8 +1251,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 			outputString.append(".W");
 			baseInstructionByteNumber = 4;
 		} else if (displacement == "11111111") {
-			displacement = retrieveBitsFromInstruction(-1, 32,
-					commandString);
+			displacement = retrieveBitsFromInstruction(-1, 32, commandString);
 			outputString.append(".L");
 			baseInstructionByteNumber = 6;
 		} else {
@@ -1632,12 +1635,10 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//add the size of the base command to the string
 		if (size == "11") {
 			outputString.append(".W");
-			extensionBytes = assembleEffectiveAddress(commandString,
-					effectiveAddress, 'W');
+			extensionBytes = assembleEffectiveAddress(commandString, effectiveAddress, 'W');
 		} else if(size == "10") {
 			outputString.append(".L");
-					extensionBytes = assembleEffectiveAddress(commandString,
-					 effectiveAddress, 'L');
+			extensionBytes = assembleEffectiveAddress(commandString, effectiveAddress, 'L');
 		} else {
 			baseInstructionByteNumber = 0; //set this to 0 if no valid entries are made
 		}
