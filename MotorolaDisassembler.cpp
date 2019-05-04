@@ -179,7 +179,7 @@ int main() {
 		  if(addressOfInterest >= endAddress || multipleMatchedCommands == true)
 		  {
 			  notFinished = false;
-			  if(!resetVBRwritten)
+			  if(!resetVBRwritten && startAddress == 0)
 			  {
 				  //if we have not written the reset vector table, write it now
 				  writeAssembly.close();//close the file to store our disassembled code so it saves current progress
@@ -279,7 +279,7 @@ int main() {
 						  //bool alreadyPresent = numberIsPresentInJumpAddresses(jump);//is this address already present in the file?
 						  //numberIsSmallerInJumpAddresses(addressOfInterest);//remove any numbers from the file which are smaller than our current position in order to keep the file short
 						  //branchAddresses.open("branchOrJumpAddresses.txt", ios::app);
-						  if(displacementBytes > 0 && jump <= endAddress/*&& !alreadyPresent*/) {
+						  if(displacementBytes > 0 && jump <= endAddress && jump % 2 == 0/*&& !alreadyPresent*/) {
 							  //branchAddresses << jump << '\n';
 							  jumpLandingPoints = addToJumpAddresses(jumpLandingPoints, jump);
 
