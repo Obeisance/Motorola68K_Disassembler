@@ -818,6 +818,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//0  1  1  0   condition   8-bit displacement
 		//if 8-bit == $00, use next 16 bits
 		//if 8-bit == $FF, use next 32 bits - only for MC68020,68030,68040
+		//but the CPU32 is similar to the 68020, so we'll include this interpretation
 		//conditional tests
 		//Mnemonic     condition   encoding
 		//  T*            True       0000
@@ -901,6 +902,11 @@ int constructInstructionString(string commandArrayString, string commandString,
 			displacement = retrieveBitsFromInstruction(-1, 16, commandString);
 			outputString.append(".W");
 			baseInstructionByteNumber = 4;
+		} else if (displacement == "11111111") {
+			displacement = retrieveBitsFromInstruction(-1, 32,
+					commandString);
+			outputString.append(".L");
+			baseInstructionByteNumber = 6;
 		} else if (baseInstructionByteNumber > 0) {
 			outputString.append(".B");
 		}
@@ -1226,6 +1232,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//0  1  1  0  0  0  0 0  8-bit displacement
 		// if 8-bit == $00, use next 16 bits
 		// if 8-bit == $FF, use next 32 bits, only MC68020, 68030, 68040
+		//since the CPU32 is similar to the 68020, we'll include this interpretation
 		//collect the bits to determine the instruction
 		string displacement = retrieveBitsFromInstruction(7, 8, commandString);
 
@@ -1239,6 +1246,11 @@ int constructInstructionString(string commandArrayString, string commandString,
 			displacement = retrieveBitsFromInstruction(-1, 16, commandString);
 			outputString.append(".W");
 			baseInstructionByteNumber = 4;
+		} else if (displacement == "11111111") {
+			displacement = retrieveBitsFromInstruction(-1, 32,
+					commandString);
+			outputString.append(".L");
+			baseInstructionByteNumber = 6;
 		} else {
 			outputString.append(".B");
 		}
@@ -1585,6 +1597,7 @@ int constructInstructionString(string commandArrayString, string commandString,
 		//word  long
 		// 11    10*
 		//*only 68020,68030,68040
+		//CPU32 is like 68020, so include the 'Long' interp
 		//effective address field: <ea>
 		//addressing mode    mode    register
 		//    Dn             000      Dn
@@ -1621,6 +1634,10 @@ int constructInstructionString(string commandArrayString, string commandString,
 			outputString.append(".W");
 			extensionBytes = assembleEffectiveAddress(commandString,
 					effectiveAddress, 'W');
+		} else if(size == "10") {
+			outputString.append(".L");
+					extensionBytes = assembleEffectiveAddress(commandString,
+					 effectiveAddress, 'L');
 		} else {
 			baseInstructionByteNumber = 0; //set this to 0 if no valid entries are made
 		}
